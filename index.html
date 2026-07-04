@@ -331,6 +331,59 @@
             outline: none;
         }
 
+        /* ====== أزرار الفلترة ====== */
+        .filter-buttons {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 2px solid #dce6dc;
+            background: white;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--black-soft);
+        }
+        .filter-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+        .filter-btn.active {
+            border-color: var(--green-mid);
+            background: var(--green-mid);
+            color: white;
+        }
+        .filter-btn.active-high { border-color: #e74c3c; background: #e74c3c; color: white; }
+        .filter-btn.active-medium { border-color: #f39c12; background: #f39c12; color: white; }
+        .filter-btn.active-low { border-color: #27ae60; background: #27ae60; color: white; }
+        .filter-btn .badge-count {
+            display: inline-block;
+            background: rgba(0,0,0,0.1);
+            border-radius: 10px;
+            padding: 0 6px;
+            font-size: 0.65rem;
+            margin-right: 3px;
+        }
+        .filter-btn.active .badge-count {
+            background: rgba(255,255,255,0.25);
+        }
+
+        .stats-header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .stats-header .stats-text {
+            font-size: 0.95rem;
+        }
+
         /* ====== تصميم متجاوب ====== */
         @media (max-width: 600px) {
             .container { padding: 15px; margin: 10px; }
@@ -347,6 +400,8 @@
                 padding: 4px 0;
                 word-break: break-word;
             }
+            .stats-header { flex-direction: column; align-items: stretch; }
+            .filter-buttons { justify-content: center; }
         }
     </style>
 </head>
@@ -416,9 +471,18 @@
         <!-- صفحة عرض جميع المهام -->
         <div id="page2" class="container" style="display:none;">
             <h2>📋 قائمة المهام</h2>
-            <div id="taskStats" style="margin-bottom: 15px;">
-                <span>المهام المتبقية: <span id="remainingTasks">0</span></span>
+            
+            <!-- رأس الإحصائيات مع أزرار الفلترة -->
+            <div class="stats-header">
+                <span class="stats-text">المهام المتبقية: <span id="remainingTasks">0</span></span>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="all" onclick="setFilter('all')">الكل</button>
+                    <button class="filter-btn" data-filter="high" onclick="setFilter('high')">🔴 ضروري</button>
+                    <button class="filter-btn" data-filter="medium" onclick="setFilter('medium')">🟡 مهم</button>
+                    <button class="filter-btn" data-filter="low" onclick="setFilter('low')">🟢 عادي</button>
+                </div>
             </div>
+            
             <ul id="taskList"></ul>
             <div style="display:grid;">
                 <button style="color: #1e1e1e; background-color: #afc4f1;" class="nav-btn" onclick="showPage(1)">➕ إضافة مهام جديدة</button>
@@ -448,6 +512,7 @@
         //  بيانات التطبيق
         // ==========================
         let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        let currentFilter = 'all';
 
         // ==========================
         //  تحديث الإحصائيات في splash
@@ -559,6 +624,26 @@
         }
 
         // ==========================
+        //  دالة تعيين الفلتر
+        // ==========================
+        function setFilter(filter) {
+            currentFilter = filter;
+            
+            // تحديث حالة الأزرار
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active', 'active-high', 'active-medium', 'active-low');
+                if (btn.dataset.filter === filter) {
+                    btn.classList.add('active');
+                    if (filter === 'high') btn.classList.add('active-high');
+                    else if (filter === 'medium') btn.classList.add('active-medium');
+                    else if (filter === 'low') btn.classList.add('active-low');
+                }
+            });
+            
+            showTasks();
+        }
+
+        // ==========================
         //  دالة الترتيب حسب الأولوية (ضروري -> مهم -> عادي)
         // ==========================
         function sortByPriority(tasksArray) {
@@ -607,16 +692,25 @@
             return taskElement;
         }
 
-        // عرض المهام غير المنتهية فقط (قائمة المهام) - مرتبة حسب الأولوية
+        // عرض المهام غير المنتهية مع تطبيق الفلتر
         function showTasks() {
             const taskList = document.getElementById('taskList');
             if (!taskList) return;
             taskList.innerHTML = '';
 
-            const activeTasks = tasks.filter(task => !task.completed);
+            // تصفية المهام النشطة
+            let activeTasks = tasks.filter(task => !task.completed);
+            
+            // تطبيق فلتر الأولوية
+            if (currentFilter !== 'all') {
+                activeTasks = activeTasks.filter(task => task.priority === currentFilter);
+            }
 
             if (activeTasks.length === 0) {
-                taskList.innerHTML = '<div class="message" style="text-align:center;">🎉 لا توجد مهام متبقية!</div>';
+                const message = currentFilter === 'all' 
+                    ? '🎉 لا توجد مهام متبقية!' 
+                    : `📭 لا توجد مهام ${getPriorityLabel(currentFilter)} متبقية!`;
+                taskList.innerHTML = `<div class="message" style="text-align:center;">${message}</div>`;
                 updateTaskStats();
                 return;
             }
