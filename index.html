@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>قائمة المهام</title>
+    <link rel="icon" type="image/png" href="/reminders.png">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #6200ea;
+            --secondary-color: #d8b9ff;
+            --accent-color: purple;
+            --danger-color: #e53935;
+            --success-color: #43a047;
+            --text-color: #333;
+            --bg-color: #f9f9f9;
+            --white: #ffffff;
+            --border-color: #e8e6e6;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--white);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 500px;
+            margin: 20px auto;
+            padding: 25px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            background: var(--bg-color);
+            transition: all 0.3s ease;
+        }
+        
+        h2 {
+            color: var(--accent-color);
+            font-size: 26px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+        
+        .task-box {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: var(--white);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s ease;
+        }
+        
+        .task-box:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .task-box:not(:last-child) {
+            margin-bottom: 15px;
+        }
+        
+        .task-content {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .task-number {
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+        
+        .task-actions {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            border: none;
+            cursor: pointer;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            padding: 8px 12px;
+            font-size: 14px;
+        }
+        
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .delete-btn {
+            background-color: var(--danger-color);
+            color: var(--white);
+        }
+        
+        .edit-btn {
+            background-color: var(--accent-color);
+            color: var(--white);
+        }
+        
+        .save-btn {
+            background-color: var(--success-color);
+            color: var(--white);
+        }
+        
+        .nav-btn {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 10px 20px;
+            margin: 10px 5px;
+            font-size: 16px;
+        }
+        
+        .nav-btn:hover, .delete-btn:hover, .edit-btn:hover, .save-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        
+        .message {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .success-message {
+            background-color: rgba(67, 160, 71, 0.2);
+            color: var(--success-color);
+        }
+        
+        .error-message {
+            background-color: rgba(229, 57, 53, 0.2);
+            color: var(--danger-color);
+        }
+        
+        textarea {
+            font-size: 16px;
+            width: 100%;
+            min-height: 80px;
+            padding: 12px;
+            background-color: var(--white);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            resize: none;
+            overflow-y: auto;
+            margin: 10px 0;
+            transition: border 0.3s ease;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(98, 0, 234, 0.2);
+        }
+        
+        input[type="checkbox"] {
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            background-color: var(--white);
+            border: 2px solid var(--primary-color);
+            border-radius: 5px;
+            cursor: pointer;
+            position: relative;
+            flex-shrink: 0;
+        }
+        
+        input[type="checkbox"]:checked {
+            background-color: var(--accent-color);
+        }
+        
+        input[type="checkbox"]:checked::after {
+            content: '✓';
+            color: var(--white);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 14px;
+        }
+        
+        .completed-task {
+            opacity: 0.7;
+            text-decoration: line-through;
+        }
+        
+        .char-counter {
+            text-align: left;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+                margin: 10px;
+            }
+            
+            .task-box {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .task-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
+        .go-back {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 1rem;
+            color: #fff;
+            background-color: #0d1dad;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .go-back:hover {
+            background-color: #4b0082;
+        }
+    </style>
+</head>
+<body>
+    <div id="page1" class="container">
+        <h2>إضافة مهمة جديدة</h2>
+        <textarea id="taskInput" placeholder="اكتب المهمة هنا..." maxlength="200"></textarea>
+        <div class="char-counter"><span id="charCount">0</span>/200</div>
+        <button class="save-btn" onclick="addTask()">حفظ المهمة</button>
+        <div id="saveMessage" class="message success-message" style="display:none;">تم حفظ المهمة بنجاح!</div>
+        <div id="maxTaskMessage" class="message error-message" style="display:none;">لقد وصلت إلى الحد الأقصى للمهام (10)!</div>
+        <button class="nav-btn" onclick="showPage(2)">عرض جميع المهام</button>
+    </div>
+
+    <div id="page2" class="container" style="display:none;">
+        <h2>قائمة المهام</h2>
+        <div id="taskStats" style="margin-bottom: 15px;">
+            <span>إجمالي المهام: <span id="totalTasks">0</span></span> | 
+            <span>منتهية: <span id="completedTasks">0</span></span> | 
+            <span>متبقية: <span id="remainingTasks">0</span></span>
+        </div>
+        <ul id="taskList"></ul>
+        <button class="nav-btn" onclick="showPage(1)">إضافة مهمة جديدة</button>
+        <button class="nav-btn" onclick="showPage(3)">عرض المهام غير المنتهية</button>
+    </div>
+
+    <div id="page3" class="container" style="display:none;">
+        <h2>المهام غير المنتهية</h2>
+        <div id="incompleteStats" style="margin-bottom: 15px;">
+            <span>عدد المهام غير المنتهية: <span id="incompleteCount">0</span></span>
+        </div>
+        <ul id="incompleteTasks"></ul>
+        <button class="nav-btn" onclick="showPage(2)">عرض جميع المهام</button>
+    </div>
+        <div style="width: 100%; text-align: center;">
+            <a href="/index.html" class="go-back">الرجوع الى القائمة الرئيسية</a>
+        </div>
+    <script>
+        // متغيرات التطبيق
+        let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        
+        // تهيئة الصفحة عند التحميل
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCharCounter();
+            document.getElementById('taskInput').addEventListener('input', updateCharCounter);
+        });
+        
+        // تحديث عداد الأحرف
+        function updateCharCounter() {
+            const taskInput = document.getElementById('taskInput');
+            const charCount = document.getElementById('charCount');
+            charCount.textContent = taskInput.value.length;
+        }
+        
+        // حفظ المهام في localStorage
+        function saveTasks() {
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+            updateTaskStats();
+        }
+        
+        // إضافة مهمة جديدة
+        function addTask() {
+            const taskInput = document.getElementById('taskInput');
+            const taskText = taskInput.value.trim();
+            const saveMessage = document.getElementById('saveMessage');
+            const maxTaskMessage = document.getElementById('maxTaskMessage');
+            
+            // التحقق من الحد الأقصى للمهام
+            if (tasks.length >= 10) {
+                maxTaskMessage.style.display = 'block';
+                saveMessage.style.display = 'none';
+                setTimeout(() => maxTaskMessage.style.display = 'none', 3000);
+                return;
+            }
+            
+            // التحقق من نص المهمة
+            if (!taskText) {
+                maxTaskMessage.textContent = 'الرجاء إدخال نص المهمة!';
+                maxTaskMessage.style.display = 'block';
+                saveMessage.style.display = 'none';
+                setTimeout(() => maxTaskMessage.style.display = 'none', 3000);
+                return;
+            }
+            
+            // إضافة المهمة
+            tasks.push({ 
+                text: taskText, 
+                completed: false,
+                createdAt: new Date().toISOString()
+            });
+            
+            saveTasks();
+            taskInput.value = '';
+            updateCharCounter();
+            
+            // عرض رسالة النجاح
+            saveMessage.style.display = 'block';
+            maxTaskMessage.style.display = 'none';
+            setTimeout(() => saveMessage.style.display = 'none', 2000);
+        }
+        
+        // عرض جميع المهام
+        function showTasks() {
+            const taskList = document.getElementById('taskList');
+            taskList.innerHTML = '';
+            
+            if (tasks.length === 0) {
+                taskList.innerHTML = '<div class="message" style="text-align:center;">لا توجد مهام لعرضها</div>';
+                updateTaskStats();
+                return;
+            }
+            
+            tasks.forEach((task, index) => {
+                const taskElement = document.createElement('div');
+                taskElement.className = `task-box ${task.completed ? 'completed-task' : ''}`;
+                taskElement.innerHTML = `
+                    <span class="task-number">${index + 1}.</span>
+                    <input type="checkbox" onchange="toggleTask(${index})" ${task.completed ? 'checked' : ''}>
+                    <textarea id="task-${index}" class="task-content" disabled>${task.text}</textarea>
+                    <div class="task-actions">
+                        <button class="edit-btn" onclick="editTask(${index})">تعديل</button>
+                        <button class="delete-btn" onclick="deleteTask(${index})">حذف</button>
+                        <button class="save-btn" onclick="saveEdit(${index})" style="display:none;">حفظ</button>
+                    </div>
+                `;
+                taskList.appendChild(taskElement);
+            });
+            
+            updateTaskStats();
+        }
+        
+        // عرض المهام غير المنتهية
+        function showIncompleteTasks() {
+            const incompleteList = document.getElementById('incompleteTasks');
+            incompleteList.innerHTML = '';
+            
+            const incompleteTasks = tasks.filter(task => !task.completed);
+            
+            if (incompleteTasks.length === 0) {
+                incompleteList.innerHTML = '<div class="message" style="text-align:center;">لا توجد مهام غير منتهية</div>';
+                document.getElementById('incompleteCount').textContent = '0';
+                return;
+            }
+            
+            incompleteTasks.forEach((task, index) => {
+                const taskElement = document.createElement('div');
+                taskElement.className = 'task-box';
+                taskElement.innerHTML = `
+                    <span class="task-number">${index + 1}.</span>
+                    <span class="task-content">${task.text}</span>
+                `;
+                incompleteList.appendChild(taskElement);
+            });
+            
+            document.getElementById('incompleteCount').textContent = incompleteTasks.length;
+        }
+        
+        // تبديل حالة المهمة (منتهية/غير منتهية)
+        function toggleTask(index) {
+            tasks[index].completed = !tasks[index].completed;
+            saveTasks();
+            
+            // إذا كنا في صفحة المهام غير المنتهية، نحدث العرض مباشرة
+            if (document.getElementById('page3').style.display === 'block') {
+                showIncompleteTasks();
+            }
+        }
+        
+        // حذف المهمة
+        function deleteTask(index) {
+            if (confirm('هل أنت متأكد من حذف هذه المهمة؟')) {
+                tasks.splice(index, 1);
+                saveTasks();
+                
+                if (document.getElementById('page2').style.display === 'block') {
+                    showTasks();
+                }
+                
+                if (document.getElementById('page3').style.display === 'block') {
+                    showIncompleteTasks();
+                }
+            }
+        }
+        
+        // تعديل المهمة
+        function editTask(index) {
+            const textarea = document.getElementById(`task-${index}`);
+            const saveButton = document.querySelectorAll("#taskList .save-btn")[index];
+            
+            textarea.disabled = false;
+            textarea.focus();
+            saveButton.style.display = "inline";
+        }
+        
+        // حفظ التعديلات
+        function saveEdit(index) {
+            const newText = document.getElementById(`task-${index}`).value.trim();
+            const saveButton = document.querySelectorAll("#taskList .save-btn")[index];
+            
+            if (newText) {
+                tasks[index].text = newText;
+                saveTasks();
+                
+                document.getElementById(`task-${index}`).disabled = true;
+                saveButton.style.display = "none";
+            }
+        }
+        
+        // تحديث إحصائيات المهام
+        function updateTaskStats() {
+            const totalTasks = tasks.length;
+            const completedTasks = tasks.filter(task => task.completed).length;
+            const remainingTasks = totalTasks - completedTasks;
+            
+            document.getElementById('totalTasks').textContent = totalTasks;
+            document.getElementById('completedTasks').textContent = completedTasks;
+            document.getElementById('remainingTasks').textContent = remainingTasks;
+        }
+        
+        // تبديل الصفحات
+        function showPage(pageNumber) {
+            document.getElementById("page1").style.display = pageNumber === 1 ? "block" : "none";
+            document.getElementById("page2").style.display = pageNumber === 2 ? "block" : "none";
+            document.getElementById("page3").style.display = pageNumber === 3 ? "block" : "none";
+            
+            if (pageNumber === 2) showTasks();
+            if (pageNumber === 3) showIncompleteTasks();
+        }
+    </script>
+</body>
+</html>
