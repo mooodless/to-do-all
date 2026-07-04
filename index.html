@@ -286,7 +286,7 @@
         }
         .task-text {
             flex: 1;
-            min-width: 120px;
+            min-width: 100px;
             padding: 4px 0;
             word-break: break-word;
             transition: text-decoration 0.2s, color 0.2s;
@@ -331,19 +331,12 @@
             outline: none;
         }
 
-        /* ====== صفحة المهام غير المنتهية ====== */
-        #incompleteTasks .task-content {
-            flex: 1;
-            min-width: 120px;
-            padding: 4px 0;
-        }
-
         /* ====== تصميم متجاوب ====== */
         @media (max-width: 600px) {
             .container { padding: 15px; margin: 10px; }
-            .splash-container { padding: 25px 18px; }
+            .splash-container { padding: 20px 15px; }
             .stats-grid { gap: 8px; }
-            .stat-number { font-size: 1.6rem; }
+            .stat-number { font-size: 1.0rem; }
             .task-box { flex-direction: column; align-items: stretch; }
             .task-actions { justify-content: flex-end; }
             .priority-select { width: 100%; }
@@ -429,7 +422,7 @@
             </div>
         </div>
 
-        <!-- صفحة المهام المنتهية (جديدة) -->
+        <!-- صفحة المهام المنتهية -->
         <div id="page4" class="container" style="display:none;">
             <h2>✅ المهام المنتهية</h2>
             <div id="completedStats" style="margin-bottom: 15px;">
@@ -528,8 +521,8 @@
             }
 
             const totalAfterAdd = tasks.length + lines.length;
-            if (totalAfterAdd > 10) {
-                maxTaskMessage.textContent = `⛔ لا يمكن إضافة ${lines.length} مهام، الحد الأقصى 10 مهام (الموجود: ${tasks.length})`;
+            if (totalAfterAdd > 100) {
+                maxTaskMessage.textContent = `⛔ لا يمكن إضافة ${lines.length} مهام، الحد الأقصى 100 مهام (الموجود: ${tasks.length})`;
                 maxTaskMessage.style.display = 'block';
                 saveMessage.style.display = 'none';
                 setTimeout(() => maxTaskMessage.style.display = 'none', 4000);
@@ -556,6 +549,16 @@
                 saveMessage.style.display = 'none';
                 saveMessage.textContent = 'تم حفظ جميع المهام بنجاح!';
             }, 3000);
+        }
+
+        // ==========================
+        //  دالة الترتيب حسب الأولوية
+        // ==========================
+        function sortByPriority(tasksArray) {
+            const priorityOrder = { high: 0, medium: 1, low: 2 };
+            return [...tasksArray].sort((a, b) => {
+                return (priorityOrder[a.priority] || 1) - (priorityOrder[b.priority] || 1);
+            });
         }
 
         // ==========================
@@ -595,7 +598,7 @@
             return taskElement;
         }
 
-        // عرض المهام غير المنتهية فقط (قائمة المهام)
+        // عرض المهام غير المنتهية فقط (قائمة المهام) - مرتبة حسب الأولوية
         function showTasks() {
             const taskList = document.getElementById('taskList');
             if (!taskList) return;
@@ -609,11 +612,8 @@
                 return;
             }
 
-            // ترتيب حسب الأولوية
-            const sortedTasks = [...activeTasks].sort((a, b) => {
-                const priorityOrder = { high: 0, medium: 1, low: 2 };
-                return (priorityOrder[a.priority] || 1) - (priorityOrder[b.priority] || 1);
-            });
+            // ترتيب حسب الأولوية (ضروري -> مهم -> عادي)
+            const sortedTasks = sortByPriority(activeTasks);
 
             sortedTasks.forEach((task) => {
                 const originalIndex = tasks.indexOf(task);
@@ -622,7 +622,7 @@
             updateTaskStats();
         }
 
-        // عرض المهام المنتهية (صفحة جديدة)
+        // عرض المهام المنتهية - مرتبة حسب الأولوية
         function showCompletedTasks() {
             const completedList = document.getElementById('completedTasksList');
             if (!completedList) return;
@@ -635,7 +635,10 @@
                 return;
             }
 
-            completedTasks.forEach((task, index) => {
+            // ترتيب حسب الأولوية (ضروري -> مهم -> عادي)
+            const sortedTasks = sortByPriority(completedTasks);
+
+            sortedTasks.forEach((task, index) => {
                 const taskElement = document.createElement('div');
                 const priorityClass = getPriorityClass(task.priority || 'medium');
                 taskElement.className = `task-box ${priorityClass} completed-task`;
@@ -705,10 +708,20 @@
         //  تعديل المهمة
         // ==========================
         function editTask(index) {
-            const taskBox = document.querySelectorAll('#taskList .task-box')[index];
+            const taskBoxes = document.querySelectorAll('#taskList .task-box');
+            let taskBox = null;
+            for (let box of taskBoxes) {
+                if (parseInt(box.dataset.index) === index) {
+                    taskBox = box;
+                    break;
+                }
+            }
+            
             if (!taskBox) return;
             
             const textSpan = taskBox.querySelector('.task-text');
+            if (!textSpan) return;
+            
             const currentText = tasks[index].text;
             
             const textarea = document.createElement('textarea');
@@ -737,11 +750,19 @@
         //  حفظ التعديل
         // ==========================
         function saveEdit(index) {
-            const taskBox = document.querySelectorAll('#taskList .task-box')[index];
+            const taskBoxes = document.querySelectorAll('#taskList .task-box');
+            let taskBox = null;
+            for (let box of taskBoxes) {
+                if (parseInt(box.dataset.index) === index) {
+                    taskBox = box;
+                    break;
+                }
+            }
+            
             if (!taskBox) return;
             
             const textarea = taskBox.querySelector('.task-text');
-            if (!textarea) return;
+            if (!textarea || textarea.tagName !== 'TEXTAREA') return;
             
             const newText = textarea.value.trim();
             if (newText) {
@@ -760,6 +781,8 @@
                 if (editBtn) editBtn.style.display = 'inline';
                 
                 updateSplashStats();
+            } else {
+                alert('الرجاء إدخال نص المهمة!');
             }
         }
 
@@ -777,7 +800,6 @@
             if (remainingEl) remainingEl.textContent = remainingTasks;
             if (completedEl) completedEl.textContent = completedTasks;
             
-            // تحديث الإحصائيات الأخرى
             const totalEl = document.getElementById('totalTasks');
             const doneEl = document.getElementById('completedTasks');
             const remainEl = document.getElementById('remainingTasks');
