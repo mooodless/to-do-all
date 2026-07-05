@@ -171,23 +171,155 @@
         /* ====== باقي التطبيق ====== */
         .container {
             max-width: 500px;
-            margin: 20px auto;
-            padding: 25px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 0;
             border: 1px solid #e0eae0;
             border-radius: 20px;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
             background: var(--white-soft);
+            display: flex;
+            flex-direction: column;
+            height: 85vh;
+            max-height: 700px;
+            overflow: hidden;
         }
         .container h2 {
             color: var(--green-dark);
             font-size: 26px;
             font-weight: 600;
+            margin-bottom: 15px;
         }
+
+        /* ====== Tabs العلوية (التنقل بين الصفحات) ====== */
+        .nav-tabs {
+            display: flex;
+            gap: 6px;
+            background: #f0f5f0;
+            padding: 8px;
+            border-radius: 16px 16px 0 0;
+            border-bottom: 1px solid rgba(43,94,68,0.08);
+            flex-shrink: 0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: #f0f5f0;
+        }
+        .nav-tab {
+            flex: 1;
+            padding: 8px 10px;
+            border-radius: 12px;
+            border: none;
+            background: transparent;
+            color: var(--black-soft);
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-align: center;
+            font-family: inherit;
+        }
+        .nav-tab:hover {
+            background: rgba(43,94,68,0.06);
+        }
+        .nav-tab.active {
+            background: var(--green-mid);
+            color: white;
+            box-shadow: 0 2px 8px rgba(43,94,68,0.25);
+        }
+        .nav-tab i {
+            margin-left: 4px;
+        }
+        /* تبويب الصفحة الرئيسية بلون مميز */
+        .nav-tab.home-tab {
+            background: rgba(43,94,68,0.08);
+            border: 1px solid rgba(43,94,68,0.12);
+        }
+        .nav-tab.home-tab:hover {
+            background: rgba(43,94,68,0.15);
+        }
+        .nav-tab.home-tab.active {
+            background: #9f5e4a;
+            border-color: #9f5e4a;
+            color: white;
+            box-shadow: 0 2px 8px rgba(159,94,74,0.3);
+        }
+
+        /* ====== Tabs السفلية (الفلترة) ====== */
+        .filter-tabs {
+            display: flex;
+            gap: 6px;
+            background: #f0f5f0;
+            padding: 8px;
+            border-radius: 0 0 16px 16px;
+            border-top: 1px solid rgba(43,94,68,0.08);
+            flex-shrink: 0;
+            position: sticky;
+            bottom: 0;
+            z-index: 10;
+            background: #f0f5f0;
+        }
+        .filter-tab {
+            flex: 1;
+            padding: 6px 8px;
+            border-radius: 12px;
+            border: none;
+            background: transparent;
+            color: var(--black-soft);
+            font-size: 0.7rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-align: center;
+            font-family: inherit;
+        }
+        .filter-tab:hover {
+            background: rgba(43,94,68,0.06);
+        }
+        .filter-tab.active {
+            background: var(--green-mid);
+            color: white;
+            box-shadow: 0 2px 8px rgba(43,94,68,0.25);
+        }
+        .filter-tab.active-high {
+            background: #e74c3c;
+            color: white;
+            box-shadow: 0 2px 8px rgba(231,76,60,0.3);
+        }
+        .filter-tab.active-medium {
+            background: #f39c12;
+            color: white;
+            box-shadow: 0 2px 8px rgba(243,156,18,0.3);
+        }
+        .filter-tab.active-low {
+            background: #27ae60;
+            color: white;
+            box-shadow: 0 2px 8px rgba(39,174,96,0.3);
+        }
+
+        /* ====== محتوى الصفحة (قابل للتمرير) ====== */
+        .page-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px 20px 15px;
+        }
+        .page-content::-webkit-scrollbar {
+            width: 5px;
+        }
+        .page-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .page-content::-webkit-scrollbar-thumb {
+            background: var(--green-light);
+            border-radius: 10px;
+        }
+
+        /* ====== عناصر المهام ====== */
         .task-box {
             border: 1px solid #deeade;
             border-radius: 14px;
             padding: 15px;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             background: white;
             display: flex;
             flex-wrap: wrap;
@@ -200,24 +332,10 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.04);
         }
         .task-number { font-weight: bold; color: var(--green-mid); }
-        .delete-btn { background-color: #b16a5a; color: white; }
-        .edit-btn { background-color: var(--green-mid); color: white; }
-        .save-btn { background-color: #5f8b6b; color: white; }
-        .nav-btn {
-            background-color:#5a595b;
-            color: rgb(255, 255, 255);
-            padding: 10px 20px;
-            margin: 10px 5px;
-            font-size: 16px;
-            border-radius: 40px;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .nav-btn:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
-        }
+        .delete-btn { background-color: #b16a5a; color: white; border: none; padding: 5px 12px; border-radius: 8px; cursor: pointer; }
+        .edit-btn { background-color: var(--green-mid); color: white; border: none; padding: 5px 12px; border-radius: 8px; cursor: pointer; }
+        .save-btn { background-color: #5f8b6b; color: white; border: none; padding: 5px 12px; border-radius: 8px; cursor: pointer; }
+        
         textarea {
             font-size: 16px;
             width: 100%;
@@ -301,19 +419,6 @@
         .message { margin: 10px 0; padding: 10px; border-radius: 12px; text-align: center; font-weight: 500; }
         .success-message { background: rgba(95, 139, 107, 0.15); color: #2b5e44; }
         .error-message { background: rgba(177, 106, 90, 0.12); color: #9f5e4a; }
-        .go-back {
-            display: inline-block;
-            padding: 10px 20px;
-            font-size: 1rem;
-            color: white;
-            background: #9f5e4a;
-            border: none;
-            border-radius: 40px;
-            text-decoration: none;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .go-back:hover { background: #7a4a3a; }
         
         .priority-select {
             padding: 5px 8px;
@@ -331,62 +436,20 @@
             outline: none;
         }
 
-        /* ====== أزرار الفلترة ====== */
-        .filter-buttons {
-            display: flex;
-            gap: 6px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        .filter-btn {
-            padding: 4px 12px;
-            border-radius: 20px;
-            border: 2px solid #dce6dc;
-            background: white;
-            font-size: 0.75rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            color: var(--black-soft);
-        }
-        .filter-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-        }
-        .filter-btn.active {
-            border-color: var(--green-mid);
-            background: var(--green-mid);
-            color: white;
-        }
-        .filter-btn.active-high { border-color: #e74c3c; background: #e74c3c; color: white; }
-        .filter-btn.active-medium { border-color: #f39c12; background: #f39c12; color: white; }
-        .filter-btn.active-low { border-color: #27ae60; background: #27ae60; color: white; }
-        .filter-btn .badge-count {
-            display: inline-block;
-            background: rgba(0,0,0,0.1);
-            border-radius: 10px;
-            padding: 0 6px;
-            font-size: 0.65rem;
-            margin-right: 3px;
-        }
-        .filter-btn.active .badge-count {
-            background: rgba(255,255,255,0.25);
-        }
-
-        .stats-header {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        .stats-header .stats-text {
+        .stats-text {
             font-size: 0.95rem;
+            display: block;
+            text-align: center;
+            margin-bottom: 10px;
+            padding: 8px;
+            background: #f6faf6;
+            border-radius: 12px;
+            border: 1px solid rgba(43,94,68,0.06);
         }
 
         /* ====== تصميم متجاوب ====== */
         @media (max-width: 600px) {
-            .container { padding: 15px; margin: 10px; }
+            .container { margin: 10px; height: 90vh; max-height: 650px; border-radius: 16px; }
             .splash-container { padding: 20px 15px; }
             .stats-grid { gap: 8px; }
             .stat-number { font-size: 1.0rem; }
@@ -400,8 +463,11 @@
                 padding: 4px 0;
                 word-break: break-word;
             }
-            .stats-header { flex-direction: column; align-items: stretch; }
-            .filter-buttons button{font-size:x-small !important ; justify-content: center; }
+            .nav-tab { font-size: 0.6rem; padding: 5px 3px; }
+            .filter-tab { font-size: 0.55rem; padding: 4px 3px; }
+            .nav-tabs { padding: 5px; gap: 3px; border-radius: 12px 12px 0 0; }
+            .filter-tabs { padding: 5px; gap: 3px; border-radius: 0 0 12px 12px; }
+            .page-content { padding: 10px 12px 10px; }
         }
     </style>
 </head>
@@ -439,71 +505,78 @@
     </div>
 
     <!-- ======== صفحات التطبيق ======== -->
-    <div id="appPages" style="display:none; width:100%;">
+    <div id="appPages" style="display:none; width:100%; max-width:500px;">
 
-        <!-- صفحة إضافة المهام -->
-        <div id="page1" class="container">
-            <h2>إضافة مهام جديدة</h2>
-            <textarea id="taskInput" placeholder="اكتب كل مهمة في سطر جديد..." maxlength="2000"></textarea>
-            <div class="char-counter"><span id="charCount">0</span>/2000</div>
-            <div class="hint-text">📝 أدخل كل مهمة في سطر منفصل. سيتم حفظ جميع المهام دفعة واحدة.</div>
-            
-            <!-- إضافة اختيار مستوى الأهمية للمهام الجديدة -->
-            <div style="margin: 12px 0 10px;">
-                <label style="font-weight: 500; color: var(--green-dark); margin-left: 10px;">
-                    <i class="fas fa-flag"></i> مستوى الأهمية الافتراضي:
-                </label>
-                <select id="defaultPriority" class="priority-select">
-                    <option value="high">ضروري</option>
-                    <option value="medium" selected>مهم</option>
-                    <option value="low">عادي</option>
-                </select>
+        <div class="container" id="mainContainer">
+
+            <!-- ====== Tabs العلوية (التنقل) ====== -->
+            <div class="nav-tabs">
+                <button class="nav-tab home-tab" data-page="0" onclick="goToSplash()">
+                    <i class="fas fa-home"></i> الرئيسية
+                </button>
+                <button class="nav-tab" data-page="1" onclick="switchPage(1)">
+                    <i class="fas fa-plus"></i> إضافة
+                </button>
+                <button class="nav-tab active" data-page="2" onclick="switchPage(2)">
+                    <i class="fas fa-list"></i> المهام
+                </button>
+                <button class="nav-tab" data-page="4" onclick="switchPage(4)">
+                    <i class="fas fa-check-circle"></i> منتهية
+                </button>
             </div>
 
-            <div style="display:grid; margin-top: 10px;">
-               <button class="save-btn" onclick="addTasks()" style="font-size:16px; padding:12px 24px; border-radius:40px;">حفظ جميع المهام</button>
-               <div id="saveMessage" class="message success-message" style="display:none;">تم حفظ جميع المهام بنجاح!</div>
-               <div id="maxTaskMessage" class="message error-message" style="display:none;"></div>
-               <button class="nav-btn" onclick="showPage(2)">📋 عرض جميع المهام</button>
-            </div>
-        </div>
+            <!-- ====== محتوى الصفحات ====== -->
+            <div class="page-content">
 
-        <!-- صفحة عرض جميع المهام -->
-        <div id="page2" class="container" style="display:none;">
-            <h2>📋 قائمة المهام</h2>
-            
-            <!-- رأس الإحصائيات مع أزرار الفلترة -->
-            <div class="stats-header">
-                <span class="stats-text">المهام المتبقية: <span id="remainingTasks">0</span></span>
-                <div class="filter-buttons">
-                    <button class="filter-btn active" data-filter="all" onclick="setFilter('all')">الكل</button>
-                    <button class="filter-btn" data-filter="high" onclick="setFilter('high')">🔴 ضروري</button>
-                    <button class="filter-btn" data-filter="medium" onclick="setFilter('medium')">🟡 مهم</button>
-                    <button class="filter-btn" data-filter="low" onclick="setFilter('low')">🟢 عادي</button>
+                <!-- صفحة إضافة المهام -->
+                <div id="page1" style="display:none;">
+                    <h2>➕ إضافة مهام</h2>
+                    <textarea id="taskInput" placeholder="اكتب كل مهمة في سطر جديد..." maxlength="2000"></textarea>
+                    <div class="char-counter"><span id="charCount">0</span>/2000</div>
+                    <div class="hint-text">📝 أدخل كل مهمة في سطر منفصل. سيتم حفظ جميع المهام دفعة واحدة.</div>
+                    
+                    <div style="margin: 12px 0 10px;">
+                        <label style="font-weight: 500; color: var(--green-dark); margin-left: 10px;">
+                            <i class="fas fa-flag"></i> مستوى الأهمية الافتراضي:
+                        </label>
+                        <select id="defaultPriority" class="priority-select">
+                            <option value="high">ضروري</option>
+                            <option value="medium" selected>مهم</option>
+                            <option value="low">عادي</option>
+                        </select>
+                    </div>
+
+                    <button class="save-btn" onclick="addTasks()" style="font-size:16px; padding:12px 24px; border-radius:40px; width:100%; border:none; cursor:pointer;">
+                        💾 حفظ جميع المهام
+                    </button>
+                    <div id="saveMessage" class="message success-message" style="display:none;">تم حفظ جميع المهام بنجاح!</div>
+                    <div id="maxTaskMessage" class="message error-message" style="display:none;"></div>
                 </div>
-            </div>
-            
-            <ul id="taskList"></ul>
-            <div style="display:grid;">
-                <button style="color: #1e1e1e; background-color: #afc4f1;" class="nav-btn" onclick="showPage(1)">➕ إضافة مهام جديدة</button>
-                <button style="color: #1e1e1e; background-color: #cdaaec;" class="nav-btn" onclick="showPage(4)">✅ المهام المنتهية</button>
-            </div>
-            <div style="width:100%; text-align:center; margin-top:10px;">
-                <a href="#" class="go-back" onclick="goToSplash()">🏠 الصفحة الرئيسية</a>
-            </div>
-        </div>
 
-        <!-- صفحة المهام المنتهية -->
-        <div id="page4" class="container" style="display:none;">
-            <h2>✅ المهام المنتهية</h2>
-            <div id="completedStats" style="margin-bottom: 15px;">
-                <span>عدد المهام المنتهية: <span id="completedCount">0</span></span>
+                <!-- صفحة عرض جميع المهام -->
+                <div id="page2">
+                    <h2>📋 قائمة المهام</h2>
+                    <span class="stats-text">المهام المتبقية: <span id="remainingTasks">0</span></span>
+                    <div id="taskList"></div>
+                </div>
+
+                <!-- صفحة المهام المنتهية -->
+                <div id="page4" style="display:none;">
+                    <h2>✅ المهام المنتهية</h2>
+                    <span class="stats-text">عدد المهام المنتهية: <span id="completedCount">0</span></span>
+                    <div id="completedTasksList"></div>
+                </div>
+
             </div>
-            <ul id="completedTasksList"></ul>
-            <button class="nav-btn" onclick="showPage(2)">📋 عرض جميع المهام</button>
-            <div style="width:100%; text-align:center; margin-top:10px;">
-                <a href="#" class="go-back" onclick="goToSplash()">🏠 الصفحة الرئيسية</a>
+
+            <!-- ====== Tabs السفلية (الفلترة) ====== -->
+            <div class="filter-tabs" id="filterTabs">
+                <button class="filter-tab active" data-filter="all" onclick="setFilter('all')">الكل</button>
+                <button class="filter-tab" data-filter="high" onclick="setFilter('high')">🔴 ضروري</button>
+                <button class="filter-tab" data-filter="medium" onclick="setFilter('medium')">🟡 مهم</button>
+                <button class="filter-tab" data-filter="low" onclick="setFilter('low')">🟢 عادي</button>
             </div>
+
         </div>
     </div>
 
@@ -513,6 +586,7 @@
         // ==========================
         let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
         let currentFilter = 'all';
+        let currentPage = 2;
 
         // ==========================
         //  تحديث الإحصائيات في splash
@@ -532,10 +606,7 @@
         function enterApp() {
             document.getElementById('splashPage').style.display = 'none';
             document.getElementById('appPages').style.display = 'block';
-            showPage(1);
-            updateTaskStats();
-            if (document.getElementById('page2').style.display === 'block') showTasks();
-            if (document.getElementById('page4').style.display === 'block') showCompletedTasks();
+            switchPage(2);
         }
 
         // ==========================
@@ -545,6 +616,9 @@
             document.getElementById('appPages').style.display = 'none';
             document.getElementById('splashPage').style.display = 'block';
             updateSplashStats();
+            document.querySelectorAll('.nav-tab').forEach(btn => {
+                btn.classList.remove('active');
+            });
         }
 
         // ==========================
@@ -621,6 +695,9 @@
                 saveMessage.style.display = 'none';
                 saveMessage.textContent = 'تم حفظ جميع المهام بنجاح!';
             }, 3000);
+            
+            if (currentPage === 2) showTasks();
+            if (currentPage === 4) showCompletedTasks();
         }
 
         // ==========================
@@ -629,8 +706,7 @@
         function setFilter(filter) {
             currentFilter = filter;
             
-            // تحديث حالة الأزرار
-            document.querySelectorAll('.filter-btn').forEach(btn => {
+            document.querySelectorAll('.filter-tab').forEach(btn => {
                 btn.classList.remove('active', 'active-high', 'active-medium', 'active-low');
                 if (btn.dataset.filter === filter) {
                     btn.classList.add('active');
@@ -640,11 +716,11 @@
                 }
             });
             
-            showTasks();
+            if (currentPage === 2) showTasks();
         }
 
         // ==========================
-        //  دالة الترتيب حسب الأولوية (ضروري -> مهم -> عادي)
+        //  دالة الترتيب حسب الأولوية
         // ==========================
         function sortByPriority(tasksArray) {
             const priorityOrder = { high: 0, medium: 1, low: 2 };
@@ -692,16 +768,13 @@
             return taskElement;
         }
 
-        // عرض المهام غير المنتهية مع تطبيق الفلتر
         function showTasks() {
             const taskList = document.getElementById('taskList');
             if (!taskList) return;
             taskList.innerHTML = '';
 
-            // تصفية المهام النشطة
             let activeTasks = tasks.filter(task => !task.completed);
             
-            // تطبيق فلتر الأولوية
             if (currentFilter !== 'all') {
                 activeTasks = activeTasks.filter(task => task.priority === currentFilter);
             }
@@ -715,7 +788,6 @@
                 return;
             }
 
-            // ترتيب حسب الأولوية (ضروري -> مهم -> عادي)
             const sortedTasks = sortByPriority(activeTasks);
 
             sortedTasks.forEach((task) => {
@@ -725,7 +797,6 @@
             updateTaskStats();
         }
 
-        // عرض المهام المنتهية - مرتبة حسب الأولوية
         function showCompletedTasks() {
             const completedList = document.getElementById('completedTasksList');
             if (!completedList) return;
@@ -738,7 +809,6 @@
                 return;
             }
 
-            // ترتيب حسب الأولوية (ضروري -> مهم -> عادي)
             const sortedTasks = sortByPriority(completedTasks);
 
             sortedTasks.forEach((task, index) => {
@@ -760,27 +830,26 @@
         }
 
         // ==========================
-        //  إكمال المهمة (نقلها إلى المنتهية)
+        //  إكمال المهمة
         // ==========================
         function completeTask(index) {
             tasks[index].completed = true;
             saveTasks();
             
-            // تحديث جميع الصفحات
-            if (document.getElementById('page2').style.display === 'block') showTasks();
-            if (document.getElementById('page4').style.display === 'block') showCompletedTasks();
+            if (currentPage === 2) showTasks();
+            if (currentPage === 4) showCompletedTasks();
             updateSplashStats();
         }
 
         // ==========================
-        //  استرجاع المهمة من المنتهية
+        //  استرجاع المهمة
         // ==========================
         function undoComplete(index) {
             tasks[index].completed = false;
             saveTasks();
             
-            if (document.getElementById('page2').style.display === 'block') showTasks();
-            if (document.getElementById('page4').style.display === 'block') showCompletedTasks();
+            if (currentPage === 2) showTasks();
+            if (currentPage === 4) showCompletedTasks();
             updateSplashStats();
         }
 
@@ -790,8 +859,8 @@
         function changePriority(index, newPriority) {
             tasks[index].priority = newPriority;
             saveTasks();
-            if (document.getElementById('page2').style.display === 'block') showTasks();
-            if (document.getElementById('page4').style.display === 'block') showCompletedTasks();
+            if (currentPage === 2) showTasks();
+            if (currentPage === 4) showCompletedTasks();
         }
 
         // ==========================
@@ -801,8 +870,8 @@
             if (confirm('هل أنت متأكد من حذف هذه المهمة؟')) {
                 tasks.splice(index, 1);
                 saveTasks();
-                if (document.getElementById('page2').style.display === 'block') showTasks();
-                if (document.getElementById('page4').style.display === 'block') showCompletedTasks();
+                if (currentPage === 2) showTasks();
+                if (currentPage === 4) showCompletedTasks();
                 updateSplashStats();
             }
         }
@@ -902,25 +971,29 @@
             
             if (remainingEl) remainingEl.textContent = remainingTasks;
             if (completedEl) completedEl.textContent = completedTasks;
-            
-            const totalEl = document.getElementById('totalTasks');
-            const doneEl = document.getElementById('completedTasks');
-            const remainEl = document.getElementById('remainingTasks');
-            if (totalEl) totalEl.textContent = totalTasks;
-            if (doneEl) doneEl.textContent = completedTasks;
-            if (remainEl) remainEl.textContent = remainingTasks;
         }
 
-        function showPage(pageNumber) {
-            const p1 = document.getElementById("page1");
-            const p2 = document.getElementById("page2");
-            const p3 = document.getElementById("page3");
-            const p4 = document.getElementById("page4");
+        // ==========================
+        //  التبديل بين الصفحات
+        // ==========================
+        function switchPage(pageNumber) {
+            currentPage = pageNumber;
             
-            if (p1) p1.style.display = pageNumber === 1 ? "block" : "none";
-            if (p2) p2.style.display = pageNumber === 2 ? "block" : "none";
-            if (p3) p3.style.display = pageNumber === 3 ? "block" : "none";
-            if (p4) p4.style.display = pageNumber === 4 ? "block" : "none";
+            document.getElementById('page1').style.display = 'none';
+            document.getElementById('page2').style.display = 'none';
+            document.getElementById('page4').style.display = 'none';
+            
+            if (pageNumber === 1) document.getElementById('page1').style.display = 'block';
+            else if (pageNumber === 2) document.getElementById('page2').style.display = 'block';
+            else if (pageNumber === 4) document.getElementById('page4').style.display = 'block';
+            
+            document.querySelectorAll('.nav-tab').forEach(btn => {
+                btn.classList.remove('active');
+                const page = parseInt(btn.dataset.page);
+                if (page === pageNumber) {
+                    btn.classList.add('active');
+                }
+            });
             
             if (pageNumber === 2) showTasks();
             if (pageNumber === 4) showCompletedTasks();
