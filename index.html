@@ -44,8 +44,6 @@
         .splash-container {
             max-width: 440px;
             width: 100%;
-            align-items: center;
-            justify-content: center;
             background: var(--white-soft);
             border-radius: var(--radius);
             padding: 35px 30px 40px;
@@ -451,7 +449,7 @@
 
         /* ====== تصميم متجاوب ====== */
         @media (max-width: 600px) {
-            .container { margin: 10px; height: 90vh; max-height: 650px; border-radius: 16px; }
+            .container { justify-content: center; height: 90vh; max-height: 650px; border-radius: 16px; }
             .splash-container { padding: 20px 15px; }
             .stats-grid { gap: 8px; }
             .stat-number { font-size: 1.0rem; }
