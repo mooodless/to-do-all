@@ -16,7 +16,7 @@
             --yellow-soft: #f5e6b0;
             --yellow-light: #faf0d7;
             --black-soft: #1e1e1e;
-            --white-soft: #fcfcf7;
+            --white-soft: #f8f8ec;
             --shadow: 0 8px 24px rgba(0,0,0,0.06);
             --radius: 20px;
             --priority-high: #f3b0a8;
@@ -30,7 +30,7 @@
         }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(145deg, #f0f7f0 0%, #e6efe6 100%);
+            background: linear-gradient(145deg, #f0f7f0 0%, #efe6ec 100%);
             color: var(--black-soft);
             min-height: 100vh;
             display: flex;
@@ -210,7 +210,7 @@
             padding: 8px 10px;
             border-radius: 12px;
             border: none;
-            background: transparent;
+            background-color: #dde7dd;
             color: var(--black-soft);
             font-size: 0.8rem;
             font-weight: 500;
@@ -257,14 +257,13 @@
             position: sticky;
             bottom: 0;
             z-index: 10;
-            background: #f0f5f0;
         }
         .filter-tab {
             flex: 1;
             padding: 6px 8px;
             border-radius: 12px;
             border: none;
-            background: transparent;
+            background-color: #dde7dd;
             color: var(--black-soft);
             font-size: 0.7rem;
             font-weight: 500;
@@ -442,7 +441,7 @@
             text-align: center;
             margin-bottom: 10px;
             padding: 8px;
-            background: #f6faf6;
+            background: var(--white-soft);
             border-radius: 12px;
             border: 1px solid rgba(43,94,68,0.06);
         }
@@ -541,8 +540,9 @@
                         </label>
                         <select id="defaultPriority" class="priority-select">
                             <option value="high">ضروري</option>
-                            <option value="medium" selected>مهم</option>
+                            <option value="medium">مهم</option>
                             <option value="low">عادي</option>
+                            <option value="non" selected> </option>
                         </select>
                     </div>
 
@@ -575,6 +575,7 @@
                 <button class="filter-tab" data-filter="high" onclick="setFilter('high')">🔴 ضروري</button>
                 <button class="filter-tab" data-filter="medium" onclick="setFilter('medium')">🟡 مهم</button>
                 <button class="filter-tab" data-filter="low" onclick="setFilter('low')">🟢 عادي</button>
+                <button class="filter-tab" data-filter="non" onclick="setFilter('non')">⚪  </button>
             </div>
 
         </div>
@@ -723,10 +724,10 @@
         //  دالة الترتيب حسب الأولوية
         // ==========================
         function sortByPriority(tasksArray) {
-            const priorityOrder = { high: 0, medium: 1, low: 2 };
+            const priorityOrder = { high: 0, medium: 1, low: 2 , non: 3};
             return tasksArray.sort((a, b) => {
-                const priorityA = a.priority || 'medium';
-                const priorityB = b.priority || 'medium';
+                const priorityA = a.priority || 'non';
+                const priorityB = b.priority || 'non';
                 return priorityOrder[priorityA] - priorityOrder[priorityB];
             });
         }
@@ -735,17 +736,16 @@
         //  عرض المهام مع الأولويات
         // ==========================
         function getPriorityLabel(priority) {
-            const labels = { high: 'ضروري', medium: 'مهم', low: 'عادي' };
-            return labels[priority] || 'عادي';
+            const labels = { high: 'ضروري', medium: 'مهم', low: 'عادي' , non: ' '};
+            return labels[priority] || ' ';
         }
 
         function getPriorityClass(priority) {
             return `priority-${priority}`;
         }
-
         function renderTaskItem(task, index) {
             const taskElement = document.createElement('div');
-            const priorityClass = getPriorityClass(task.priority || 'medium');
+            const priorityClass = getPriorityClass(task.priority || 'non');
             taskElement.className = `task-box ${priorityClass}`;
             taskElement.dataset.index = index;
             
@@ -753,12 +753,13 @@
                 <span class="task-number">${index + 1}.</span>
                 <input type="checkbox" onchange="completeTask(${index})" ${task.completed ? 'checked' : ''}>
                 <span class="task-text">${task.text}</span>
-                <span class="priority-badge ${priorityClass}">${getPriorityLabel(task.priority)}</span>
+                
                 <div class="task-actions">
                     <select class="priority-select" onchange="changePriority(${index}, this.value)" style="padding:4px 6px; font-size:0.75rem;">
                         <option value="high" ${task.priority === 'high' ? 'selected' : ''}>ضروري</option>
                         <option value="medium" ${task.priority === 'medium' ? 'selected' : ''}>مهم</option>
                         <option value="low" ${task.priority === 'low' ? 'selected' : ''}>عادي</option>
+                        <option value="non" ${task.priority === 'non' ? 'selected' : ''}> </option>
                     </select>
                     <button class="edit-btn" onclick="editTask(${index})">تعديل</button>
                     <button class="delete-btn" onclick="deleteTask(${index})">حذف</button>
@@ -813,7 +814,7 @@
 
             sortedTasks.forEach((task, index) => {
                 const taskElement = document.createElement('div');
-                const priorityClass = getPriorityClass(task.priority || 'medium');
+                const priorityClass = getPriorityClass(task.priority || 'non');
                 taskElement.className = `task-box ${priorityClass} completed-task`;
                 taskElement.innerHTML = `
                     <span class="task-number">${index + 1}.</span>
