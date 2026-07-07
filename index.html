@@ -447,6 +447,27 @@
             border: 1px solid rgba(43,94,68,0.06);
         }
 
+        /* ====== حقل البحث ====== */
+        .search-box {
+            width: 100%;
+            padding: 10px 16px;
+            border: 2px solid #dce6dc;
+            border-radius: 40px;
+            font-size: 0.95rem;
+            background: white;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            font-family: inherit;
+            margin-bottom: 14px;
+            outline: none;
+        }
+        .search-box:focus {
+            border-color: var(--green-mid);
+            box-shadow: 0 0 0 3px rgba(43,94,68,0.08);
+        }
+        .search-box::placeholder {
+            color: #a0b0a0;
+        }
+
         /* ====== تصميم متجاوب ====== */
         @media (max-width: 600px) {
             .container { justify-content: center; height: 90vh; max-height: 650px; border-radius: 16px; }
@@ -468,6 +489,7 @@
             .nav-tabs { padding: 5px; gap: 3px; border-radius: 12px 12px 0 0; }
             .filter-tabs { padding: 5px; gap: 3px; border-radius: 0 0 12px 12px; }
             .page-content { padding: 10px 12px 10px; }
+            .search-box { font-size: 0.85rem; padding: 8px 14px; }
         }
     </style>
 </head>
@@ -557,6 +579,8 @@
                 <!-- صفحة عرض جميع المهام -->
                 <div id="page2">
                     <h2>📋 قائمة المهام</h2>
+                    <!-- حقل البحث الجديد أسفل عنوان الصفحة -->
+                    <input type="text" id="searchInput" class="search-box" placeholder="🔍 ابحث في المهام ..." oninput="filterTasksBySearch()">
                     <span class="stats-text">المهام المتبقية: <span id="remainingTasks">0</span></span>
                     <div id="taskList"></div>
                 </div>
@@ -589,6 +613,7 @@
         let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
         let currentFilter = 'all';
         let currentPage = 2;
+        let searchQuery = ''; // تخزين نص البحث الحالي
 
         // ==========================
         //  تحديث الإحصائيات في splash
@@ -631,6 +656,11 @@
             const taskInput = document.getElementById('taskInput');
             if (taskInput) {
                 taskInput.addEventListener('input', updateCharCounter);
+            }
+            // إعداد حقل البحث
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', filterTasksBySearch);
             }
         });
 
@@ -718,6 +748,20 @@
                 }
             });
             
+            // إعادة عرض المهام مع تطبيق الفلتر والبحث معًا
+            if (currentPage === 2) showTasks();
+        }
+
+        // ==========================
+        //  دالة البحث (تحديث searchQuery وعرض النتائج)
+        // ==========================
+        function filterTasksBySearch() {
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchQuery = searchInput.value.trim();
+            } else {
+                searchQuery = '';
+            }
             if (currentPage === 2) showTasks();
         }
 
@@ -734,7 +778,7 @@
         }
 
         // ==========================
-        //  عرض المهام مع الأولويات
+        //  عرض المهام مع الأولويات + دعم البحث
         // ==========================
         function getPriorityLabel(priority) {
             const labels = { high: 'ضروري', medium: 'مهم', low: 'عادي' , non: ' '};
@@ -744,6 +788,7 @@
         function getPriorityClass(priority) {
             return `priority-${priority}`;
         }
+
         function renderTaskItem(task, index) {
             const taskElement = document.createElement('div');
             const priorityClass = getPriorityClass(task.priority || 'non');
@@ -775,16 +820,27 @@
             if (!taskList) return;
             taskList.innerHTML = '';
 
+            // 1. تصفية المهام النشطة (غير منتهية)
             let activeTasks = tasks.filter(task => !task.completed);
             
+            // 2. تطبيق فلتر الأولوية
             if (currentFilter !== 'all') {
                 activeTasks = activeTasks.filter(task => task.priority === currentFilter);
             }
 
+            // 3. تطبيق البحث (نص جزئي، أي حرف حتى لو وسط الكلمات)
+            if (searchQuery.length > 0) {
+                const query = searchQuery.toLowerCase();
+                activeTasks = activeTasks.filter(task => task.text.toLowerCase().includes(query));
+            }
+
             if (activeTasks.length === 0) {
-                const message = currentFilter === 'all' 
-                    ? '🎉 لا توجد مهام متبقية!' 
-                    : `📭 لا توجد مهام ${getPriorityLabel(currentFilter)} متبقية!`;
+                let message = '🎉 لا توجد مهام متبقية!';
+                if (currentFilter !== 'all' && searchQuery.length === 0) {
+                    message = `📭 لا توجد مهام ${getPriorityLabel(currentFilter)} متبقية!`;
+                } else if (searchQuery.length > 0) {
+                    message = '🔍 لا توجد مهام تطابق بحثك.';
+                }
                 taskList.innerHTML = `<div class="message" style="text-align:center;">${message}</div>`;
                 updateTaskStats();
                 return;
@@ -955,6 +1011,8 @@
                 if (editBtn) editBtn.style.display = 'inline';
                 
                 updateSplashStats();
+                // إعادة عرض المهام مع الحفاظ على الفلتر والبحث
+                if (currentPage === 2) showTasks();
             } else {
                 alert('الرجاء إدخال نص المهمة!');
             }
