@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>قائمة المهام</title>
     <link rel="icon" type="image/png" href="/reminders.png">
     <link rel="manifest" href="/manifest.json">
@@ -39,6 +39,8 @@
             padding-left: 5px;
             padding-right: 5px;
             margin: 0;
+            /* منع التكبير التلقائي على الجوال */
+            touch-action: manipulation;
         }
         /* ====== صفحة البداية ====== */
         .splash-container {
@@ -459,6 +461,8 @@
             font-family: inherit;
             margin-bottom: 14px;
             outline: none;
+            /* منع التكبير التلقائي على iOS */
+            font-size: 16px;
         }
         .search-box:focus {
             border-color: var(--green-mid);
