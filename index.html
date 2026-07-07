@@ -467,6 +467,15 @@
         .search-box::placeholder {
             color: #a0b0a0;
         }
+        /* تذييل البحث لإظهار حالة النتائج */
+        .search-info {
+            font-size: 0.8rem;
+            color: var(--green-mid);
+            margin-top: -8px;
+            margin-bottom: 12px;
+            text-align: center;
+            opacity: 0.7;
+        }
 
         /* ====== تصميم متجاوب ====== */
         @media (max-width: 600px) {
@@ -581,6 +590,7 @@
                     <h2>📋 قائمة المهام</h2>
                     <!-- حقل البحث الجديد أسفل عنوان الصفحة -->
                     <input type="text" id="searchInput" class="search-box" placeholder="🔍 ابحث في المهام ..." oninput="filterTasksBySearch()">
+                    <div id="searchInfo" class="search-info"></div>
                     <span class="stats-text">المهام المتبقية: <span id="remainingTasks">0</span></span>
                     <div id="taskList"></div>
                 </div>
@@ -588,6 +598,9 @@
                 <!-- صفحة المهام المنتهية -->
                 <div id="page4" style="display:none;">
                     <h2>✅ المهام المنتهية</h2>
+                    <!-- حقل بحث للمهام المنتهية -->
+                    <input type="text" id="searchCompletedInput" class="search-box" placeholder="🔍 ابحث في المهام المنتهية ..." oninput="filterCompletedTasks()">
+                    <div id="searchCompletedInfo" class="search-info"></div>
                     <span class="stats-text">عدد المهام المنتهية: <span id="completedCount">0</span></span>
                     <div id="completedTasksList"></div>
                 </div>
@@ -613,7 +626,8 @@
         let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
         let currentFilter = 'all';
         let currentPage = 2;
-        let searchQuery = ''; // تخزين نص البحث الحالي
+        let searchQuery = ''; // تخزين نص البحث الحالي للمهام النشطة
+        let searchCompletedQuery = ''; // نص البحث للمهام المنتهية
 
         // ==========================
         //  تحديث الإحصائيات في splash
@@ -657,10 +671,14 @@
             if (taskInput) {
                 taskInput.addEventListener('input', updateCharCounter);
             }
-            // إعداد حقل البحث
+            // إعداد حقلي البحث
             const searchInput = document.getElementById('searchInput');
             if (searchInput) {
                 searchInput.addEventListener('input', filterTasksBySearch);
+            }
+            const searchCompletedInput = document.getElementById('searchCompletedInput');
+            if (searchCompletedInput) {
+                searchCompletedInput.addEventListener('input', filterCompletedTasks);
             }
         });
 
@@ -753,7 +771,7 @@
         }
 
         // ==========================
-        //  دالة البحث (تحديث searchQuery وعرض النتائج)
+        //  دالة البحث للمهام النشطة
         // ==========================
         function filterTasksBySearch() {
             const searchInput = document.getElementById('searchInput');
@@ -763,6 +781,19 @@
                 searchQuery = '';
             }
             if (currentPage === 2) showTasks();
+        }
+
+        // ==========================
+        //  دالة البحث للمهام المنتهية
+        // ==========================
+        function filterCompletedTasks() {
+            const searchCompletedInput = document.getElementById('searchCompletedInput');
+            if (searchCompletedInput) {
+                searchCompletedQuery = searchCompletedInput.value.trim();
+            } else {
+                searchCompletedQuery = '';
+            }
+            if (currentPage === 4) showCompletedTasks();
         }
 
         // ==========================
@@ -778,7 +809,7 @@
         }
 
         // ==========================
-        //  عرض المهام مع الأولويات + دعم البحث
+        //  عرض المهام مع الأولويات + دعم البحث (فقط غير المنتهية)
         // ==========================
         function getPriorityLabel(priority) {
             const labels = { high: 'ضروري', medium: 'مهم', low: 'عادي' , non: ' '};
@@ -817,10 +848,11 @@
 
         function showTasks() {
             const taskList = document.getElementById('taskList');
+            const searchInfo = document.getElementById('searchInfo');
             if (!taskList) return;
             taskList.innerHTML = '';
 
-            // 1. تصفية المهام النشطة (غير منتهية)
+            // 1. تصفية المهام النشطة (غير منتهية) فقط
             let activeTasks = tasks.filter(task => !task.completed);
             
             // 2. تطبيق فلتر الأولوية
@@ -828,10 +860,19 @@
                 activeTasks = activeTasks.filter(task => task.priority === currentFilter);
             }
 
-            // 3. تطبيق البحث (نص جزئي، أي حرف حتى لو وسط الكلمات)
+            // 3. تطبيق البحث (نص جزئي، أي حرف حتى لو وسط الكلمات) — فقط على المهام غير المنتهية
             if (searchQuery.length > 0) {
                 const query = searchQuery.toLowerCase();
                 activeTasks = activeTasks.filter(task => task.text.toLowerCase().includes(query));
+            }
+
+            // عرض معلومات البحث
+            if (searchQuery.length > 0 && activeTasks.length === 0) {
+                searchInfo.textContent = '🔍 لا توجد مهام غير منتهية تطابق بحثك.';
+            } else if (searchQuery.length > 0) {
+                searchInfo.textContent = `🔍 عرض ${activeTasks.length} نتيجة بحث.`;
+            } else {
+                searchInfo.textContent = '';
             }
 
             if (activeTasks.length === 0) {
@@ -839,7 +880,7 @@
                 if (currentFilter !== 'all' && searchQuery.length === 0) {
                     message = `📭 لا توجد مهام ${getPriorityLabel(currentFilter)} متبقية!`;
                 } else if (searchQuery.length > 0) {
-                    message = '🔍 لا توجد مهام تطابق بحثك.';
+                    message = '🔍 لا توجد مهام غير منتهية تطابق بحثك.';
                 }
                 taskList.innerHTML = `<div class="message" style="text-align:center;">${message}</div>`;
                 updateTaskStats();
@@ -855,15 +896,40 @@
             updateTaskStats();
         }
 
+        // ==========================
+        //  عرض المهام المنتهية مع دعم البحث
+        // ==========================
         function showCompletedTasks() {
             const completedList = document.getElementById('completedTasksList');
+            const searchCompletedInfo = document.getElementById('searchCompletedInfo');
             if (!completedList) return;
             completedList.innerHTML = '';
-            const completedTasks = tasks.filter(task => task.completed);
+            
+            // 1. تصفية المهام المنتهية
+            let completedTasks = tasks.filter(task => task.completed);
+
+            // 2. تطبيق البحث على المهام المنتهية
+            if (searchCompletedQuery.length > 0) {
+                const query = searchCompletedQuery.toLowerCase();
+                completedTasks = completedTasks.filter(task => task.text.toLowerCase().includes(query));
+            }
+
+            // عرض معلومات البحث للمهام المنتهية
+            if (searchCompletedQuery.length > 0 && completedTasks.length === 0) {
+                searchCompletedInfo.textContent = '🔍 لا توجد مهام منتهية تطابق بحثك.';
+            } else if (searchCompletedQuery.length > 0) {
+                searchCompletedInfo.textContent = `🔍 عرض ${completedTasks.length} نتيجة بحث.`;
+            } else {
+                searchCompletedInfo.textContent = '';
+            }
 
             if (completedTasks.length === 0) {
-                completedList.innerHTML = '<div class="message" style="text-align:center;">📭 لا توجد مهام منتهية</div>';
-                document.getElementById('completedCount').textContent = '0';
+                let message = '📭 لا توجد مهام منتهية';
+                if (searchCompletedQuery.length > 0) {
+                    message = '🔍 لا توجد مهام منتهية تطابق بحثك.';
+                }
+                completedList.innerHTML = `<div class="message" style="text-align:center;">${message}</div>`;
+                document.getElementById('completedCount').textContent = tasks.filter(t => t.completed).length;
                 return;
             }
 
@@ -884,7 +950,7 @@
                 `;
                 completedList.appendChild(taskElement);
             });
-            document.getElementById('completedCount').textContent = completedTasks.length;
+            document.getElementById('completedCount').textContent = tasks.filter(t => t.completed).length;
         }
 
         // ==========================
