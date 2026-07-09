@@ -737,7 +737,7 @@
                 <button class="filter-tab" data-filter="high" onclick="setFilter('high')">🔴 ضروري</button>
                 <button class="filter-tab" data-filter="medium" onclick="setFilter('medium')">🟡 مهم</button>
                 <button class="filter-tab" data-filter="low" onclick="setFilter('low')">🟢 عادي</button>
-                <button class="filter-tab" data-filter="non" onclick="setFilter('non')">⚪  </button>
+                <button class="filter-tab" data-filter="non" onclick="setFilter('non')">⚪بلا تصنيف</button>
             </div>
 
         </div>
@@ -929,7 +929,7 @@
         //  دوال العرض
         // ==========================
         function getPriorityLabel(priority) {
-            const labels = { high: 'ضروري', medium: 'مهم', low: 'عادي' , non: ' '};
+            const labels = { high: 'ضروري', medium: 'مهم', low: 'عادي' , non: 'بلا تصنيف'};
             return labels[priority] || ' ';
         }
 
@@ -937,14 +937,14 @@
             return `priority-${priority}`;
         }
 
-        function renderTaskItem(task, index) {
+        function renderTaskItem(task, index, displayNumber) {
             const taskElement = document.createElement('div');
             const priorityClass = getPriorityClass(task.priority || 'non');
             taskElement.className = `task-box ${priorityClass}`;
             taskElement.dataset.index = index;
             
             taskElement.innerHTML = `
-                <span class="task-number">${index + 1}.</span>
+                <span class="task-number">${displayNumber}.</span>
                 <input type="checkbox" onchange="completeTask(${index})" ${task.completed ? 'checked' : ''}>
                 <span class="task-text">${task.text}</span>
                 <div class="task-actions">
@@ -952,7 +952,7 @@
                         <option value="high" ${task.priority === 'high' ? 'selected' : ''}>ضروري</option>
                         <option value="medium" ${task.priority === 'medium' ? 'selected' : ''}>مهم</option>
                         <option value="low" ${task.priority === 'low' ? 'selected' : ''}>عادي</option>
-                        <option value="non" ${task.priority === 'non' ? 'selected' : ''}> </option>
+                        <option value="non" ${task.priority === 'non' ? 'selected' : ''}>بلا تصنيف</option>
                     </select>
                     <button class="edit-btn" onclick="editTask(${index})">تعديل</button>
                     <button class="delete-btn" onclick="deleteTask(${index})">حذف</button>
@@ -1001,9 +1001,10 @@
 
             const sortedTasks = sortByPriority(activeTasks);
 
-            sortedTasks.forEach((task) => {
+            // عرض الأرقام التسلسلية من 1 إلى n
+            sortedTasks.forEach((task, idx) => {
                 const originalIndex = tasks.indexOf(task);
-                taskList.appendChild(renderTaskItem(task, originalIndex));
+                taskList.appendChild(renderTaskItem(task, originalIndex, idx + 1));
             });
             updateTaskStats();
         }
@@ -1041,12 +1042,13 @@
 
             const sortedTasks = sortByPriority(completedTasks);
 
-            sortedTasks.forEach((task, index) => {
+            // عرض الأرقام التسلسلية من 1 إلى n
+            sortedTasks.forEach((task, idx) => {
                 const taskElement = document.createElement('div');
                 const priorityClass = getPriorityClass(task.priority || 'non');
                 taskElement.className = `task-box ${priorityClass} completed-task`;
                 taskElement.innerHTML = `
-                    <span class="task-number">${index + 1}.</span>
+                    <span class="task-number">${idx + 1}.</span>
                     <span class="task-text">${task.text}</span>
                     <span class="priority-badge ${priorityClass}">${getPriorityLabel(task.priority)}</span>
                     <div class="task-actions">
