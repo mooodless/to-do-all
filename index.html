@@ -7,7 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="/reminders.png">
     <link rel="manifest" href="/manifest.json">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         /* ====== الأساسيات ====== */
@@ -31,7 +30,6 @@
             padding: 0;
         }
         body {
-            /* ====== استخدام خط عربي ====== */
             font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(145deg, #f0f7f0 0%, #efe6ec 100%);
             color: var(--black-soft);
@@ -45,7 +43,6 @@
             touch-action: manipulation;
         }
 
-        /* ====== التأكد من اتصال الحروف العربية ====== */
         .task-text, .stat-label, .app-title, .app-sub,
         .nav-tab, .filter-tab, .priority-badge,
         .stats-text, .hint-text, .message,
@@ -54,6 +51,7 @@
             unicode-bidi: plaintext;
             direction: rtl;
         }
+
         /* ====== صفحة البداية ====== */
         .splash-container {
             max-width: 440px;
@@ -85,8 +83,6 @@
             border-bottom: 1px solid rgba(43,94,68,0.10);
             padding-bottom: 15px;
         }
-
-        /* الصورة الدائرية مع الحركة */
         .avatar-wrapper {
             width: 130px;
             height: 130px;
@@ -119,7 +115,6 @@
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.04));
         }
 
-        /* ====== الإحصائيات ====== */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -155,7 +150,6 @@
         .stat-card:nth-child(2) .stat-number { color: #6b8c5c; }
         .stat-card:nth-child(3) .stat-number { color: #b68b40; }
 
-        /* ====== زر الدخول ====== */
         .enter-btn {
             display: inline-block;
             background: linear-gradient(135deg, #8edebf, #326e51);
@@ -183,7 +177,7 @@
             margin-left: 8px;
         }
 
-        /* ====== باقي التطبيق ====== */
+        /* ====== التطبيق ====== */
         .container {
             max-width: 500px;
             width: 100%;
@@ -206,7 +200,6 @@
             margin-bottom: 15px;
         }
 
-        /* ====== Tabs العلوية (التنقل بين الصفحات) ====== */
         .nav-tabs {
             display: flex;
             gap: 6px;
@@ -245,7 +238,6 @@
         .nav-tab i {
             margin-left: 4px;
         }
-        /* تبويب الصفحة الرئيسية بلون مميز */
         .nav-tab.home-tab {
             background: rgba(43,94,68,0.08);
             border: 1px solid rgba(43,94,68,0.12);
@@ -260,7 +252,6 @@
             box-shadow: 0 2px 8px rgba(159,94,74,0.3);
         }
 
-        /* ====== Tabs السفلية (الفلترة) ====== */
         .filter-tabs {
             display: flex;
             gap: 6px;
@@ -311,7 +302,6 @@
             box-shadow: 0 2px 8px rgba(39,174,96,0.3);
         }
 
-        /* ====== محتوى الصفحة (قابل للتمرير) ====== */
         .page-content {
             flex: 1;
             overflow-y: auto;
@@ -328,7 +318,6 @@
             border-radius: 10px;
         }
 
-        /* ====== عناصر المهام ====== */
         .task-box {
             border: 1px solid #deeade;
             border-radius: 14px;
@@ -390,7 +379,6 @@
             transform: translate(-50%, -50%);
             font-size: 14px;
         }
-        /* ====== مستويات الأهمية ====== */
         .priority-badge {
             display: inline-block;
             padding: 2px 10px;
@@ -461,7 +449,6 @@
             border: 1px solid rgba(43,94,68,0.06);
         }
 
-        /* ====== حقل البحث ====== */
         .search-box {
             width: 100%;
             padding: 10px 16px;
@@ -473,7 +460,6 @@
             font-family: inherit;
             margin-bottom: 14px;
             outline: none;
-            /* منع التكبير التلقائي على iOS */
             font-size: 16px;
         }
         .search-box:focus {
@@ -483,7 +469,6 @@
         .search-box::placeholder {
             color: #a0b0a0;
         }
-        /* تذييل البحث لإظهار حالة النتائج */
         .search-info {
             font-size: 0.8rem;
             color: var(--green-mid);
@@ -493,7 +478,7 @@
             opacity: 0.7;
         }
 
-        /* ====== زر التصدير ====== */
+        /* ====== زر النسخ ====== */
         .export-section {
             margin-top: 18px;
             margin-bottom: 8px;
@@ -530,8 +515,75 @@
         .export-btn i {
             font-size: 1.1rem;
         }
+        .export-btn:active {
+            transform: scale(0.96);
+        }
         body, button, input, textarea, select {
             font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* ====== صندوق عرض النص للنسخ ====== */
+        .copy-box {
+            display: none;
+            width: 100%;
+            background: #f8faf8;
+            border: 2px solid #dce6dc;
+            border-radius: 14px;
+            padding: 14px;
+            margin-top: 12px;
+            direction: ltr;
+            text-align: left;
+        }
+        .copy-box textarea {
+            width: 100%;
+            min-height: 200px;
+            border: none;
+            background: transparent;
+            resize: vertical;
+            font-size: 14px;
+            font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            direction: rtl;
+            text-align: right;
+            padding: 0;
+        }
+        .copy-box textarea:focus {
+            outline: none;
+            box-shadow: none;
+        }
+        .copy-box .copy-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .copy-box .copy-actions button {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        .copy-box .copy-actions .btn-copy {
+            background: linear-gradient(135deg, #2b5e44, #1e3a2f);
+            color: white;
+        }
+        .copy-box .copy-actions .btn-copy:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(43,94,68,0.3);
+        }
+        .copy-box .copy-actions .btn-close {
+            background: #e8e8e0;
+            color: #333;
+        }
+        .copy-box .copy-actions .btn-close:hover {
+            background: #d5d5cc;
+        }
+        .copy-box .copy-actions .btn-copy.copied {
+            background: #27ae60;
         }
 
         /* ====== تصميم متجاوب ====== */
@@ -556,22 +608,21 @@
             .filter-tabs { padding: 5px; gap: 3px; border-radius: 0 0 12px 12px; }
             .page-content { padding: 10px 12px 10px; }
             .search-box { font-size: 0.85rem; padding: 8px 14px; }
+            .copy-box textarea { min-height: 150px; font-size: 13px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- ======== صفحة البداية (Splash) ======== -->
+    <!-- ======== صفحة البداية ======== -->
     <div id="splashPage" class="splash-container">
         <div class="app-title">📋 مهامي</div>
         <div class="app-sub">نظّم يومك ببساطة</div>
-
         <div class="avatar-wrapper">
             <div class="avatar-inner">
                 <i class="fas fa-check-double"></i>
             </div>
         </div>
-
         <div class="stats-grid" id="splashStats">
             <div class="stat-card">
                 <div class="stat-number" id="splashTotal">0</div>
@@ -586,7 +637,6 @@
                 <div class="stat-label">⏳ غير منتهية</div>
             </div>
         </div>
-
         <button class="enter-btn" onclick="enterApp()">
             <i class="fas fa-arrow-left"></i> دخول
         </button>
@@ -597,7 +647,7 @@
 
         <div class="container" id="mainContainer">
 
-            <!-- ====== Tabs العلوية (التنقل) ====== -->
+            <!-- ====== Tabs العلوية ====== -->
             <div class="nav-tabs">
                 <button class="nav-tab home-tab" data-page="0" onclick="goToSplash()">
                     <i class="fas fa-home"></i> الرئيسية
@@ -622,7 +672,6 @@
                     <textarea id="taskInput" placeholder="اكتب كل مهمة في سطر جديد..." maxlength="2000"></textarea>
                     <div class="char-counter"><span id="charCount">0</span>/2000</div>
                     <div class="hint-text">📝 أدخل كل مهمة في سطر منفصل. سيتم حفظ جميع المهام دفعة واحدة.</div>
-                    
                     <div style="margin: 12px 0 10px;">
                         <label style="font-weight: 500; color: var(--green-dark); margin-left: 10px;">
                             <i class="fas fa-flag"></i> مستوى الأهمية الافتراضي:
@@ -634,7 +683,6 @@
                             <option value="non" selected> </option>
                         </select>
                     </div>
-
                     <button class="save-btn" onclick="addTasks()" style="font-size:16px; padding:12px 24px; border-radius:40px; width:100%; border:none; cursor:pointer;">
                         💾 حفظ جميع المهام
                     </button>
@@ -645,25 +693,36 @@
                 <!-- صفحة عرض جميع المهام -->
                 <div id="page2">
                     <h2>📋 قائمة المهام</h2>
-                    <!-- حقل البحث الجديد أسفل عنوان الصفحة -->
                     <input type="text" id="searchInput" class="search-box" placeholder="🔍 ابحث في المهام ..." oninput="filterTasksBySearch()">
                     <div id="searchInfo" class="search-info"></div>
                     <span class="stats-text">المهام المتبقية: <span id="remainingTasks">0</span></span>
                     <div id="taskList"></div>
 
-                    <!-- ====== زر التصدير (أسفل المهام) ====== -->
+                    <!-- ====== زر النسخ ====== -->
                     <div class="export-section">
-                        <button class="export-btn" onclick="exportAndEmailTasks()">
-                            <i class="fas fa-file-export"></i> تصدير المهام وإرسالها
+                        <button class="export-btn" onclick="showCopyBox()">
+                            <i class="fas fa-copy"></i> عرض المهام للنسخ
                         </button>
-                        <span style="font-size:0.75rem; color:#5f6f5f;">سيتم تصدير جميع المهام (غير المنتهية والمنتهية) بصيغة txt</span>
+                        <span style="font-size:0.75rem; color:#5f6f5f;">سيتم عرض جميع المهام بشكل منظم لتتمكن من نسخها</span>
+                    </div>
+
+                    <!-- ====== صندوق النسخ ====== -->
+                    <div class="copy-box" id="copyBox">
+                        <textarea id="copyTextArea" readonly></textarea>
+                        <div class="copy-actions">
+                            <button class="btn-copy" onclick="copyToClipboard()">
+                                <i class="fas fa-copy"></i> نسخ النص
+                            </button>
+                            <button class="btn-close" onclick="closeCopyBox()">
+                                <i class="fas fa-times"></i> إغلاق
+                            </button>
+                        </div>
                     </div>
                 </div>
 
                 <!-- صفحة المهام المنتهية -->
                 <div id="page4" style="display:none;">
                     <h2>✅ المهام المنتهية</h2>
-                    <!-- حقل بحث للمهام المنتهية -->
                     <input type="text" id="searchCompletedInput" class="search-box" placeholder="🔍 ابحث في المهام المنتهية ..." oninput="filterCompletedTasks()">
                     <div id="searchCompletedInfo" class="search-info"></div>
                     <span class="stats-text">عدد المهام المنتهية: <span id="completedCount">0</span></span>
@@ -672,7 +731,7 @@
 
             </div>
 
-            <!-- ====== Tabs السفلية (الفلترة) ====== -->
+            <!-- ====== Tabs السفلية ====== -->
             <div class="filter-tabs" id="filterTabs">
                 <button class="filter-tab active" data-filter="all" onclick="setFilter('all')">الكل</button>
                 <button class="filter-tab" data-filter="high" onclick="setFilter('high')">🔴 ضروري</button>
@@ -691,8 +750,8 @@
         let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
         let currentFilter = 'all';
         let currentPage = 2;
-        let searchQuery = ''; // تخزين نص البحث الحالي للمهام النشطة
-        let searchCompletedQuery = ''; // نص البحث للمهام المنتهية
+        let searchQuery = '';
+        let searchCompletedQuery = '';
 
         // ==========================
         //  تحديث الإحصائيات في splash
@@ -736,7 +795,6 @@
             if (taskInput) {
                 taskInput.addEventListener('input', updateCharCounter);
             }
-            // إعداد حقلي البحث
             const searchInput = document.getElementById('searchInput');
             if (searchInput) {
                 searchInput.addEventListener('input', filterTasksBySearch);
@@ -762,7 +820,7 @@
         }
 
         // ==========================
-        //  إضافة مهام متعددة مع مستوى الأهمية
+        //  إضافة مهام
         // ==========================
         function addTasks() {
             const taskInput = document.getElementById('taskInput');
@@ -820,7 +878,6 @@
         // ==========================
         function setFilter(filter) {
             currentFilter = filter;
-            
             document.querySelectorAll('.filter-tab').forEach(btn => {
                 btn.classList.remove('active', 'active-high', 'active-medium', 'active-low');
                 if (btn.dataset.filter === filter) {
@@ -830,13 +887,11 @@
                     else if (filter === 'low') btn.classList.add('active-low');
                 }
             });
-            
-            // إعادة عرض المهام مع تطبيق الفلتر والبحث معًا
             if (currentPage === 2) showTasks();
         }
 
         // ==========================
-        //  دالة البحث للمهام النشطة
+        //  دالة البحث
         // ==========================
         function filterTasksBySearch() {
             const searchInput = document.getElementById('searchInput');
@@ -848,9 +903,6 @@
             if (currentPage === 2) showTasks();
         }
 
-        // ==========================
-        //  دالة البحث للمهام المنتهية
-        // ==========================
         function filterCompletedTasks() {
             const searchCompletedInput = document.getElementById('searchCompletedInput');
             if (searchCompletedInput) {
@@ -862,7 +914,7 @@
         }
 
         // ==========================
-        //  دالة الترتيب حسب الأولوية
+        //  الترتيب حسب الأولوية
         // ==========================
         function sortByPriority(tasksArray) {
             const priorityOrder = { high: 0, medium: 1, low: 2 , non: 3};
@@ -874,7 +926,7 @@
         }
 
         // ==========================
-        //  عرض المهام مع الأولويات + دعم البحث (فقط غير المنتهية)
+        //  دوال العرض
         // ==========================
         function getPriorityLabel(priority) {
             const labels = { high: 'ضروري', medium: 'مهم', low: 'عادي' , non: ' '};
@@ -895,7 +947,6 @@
                 <span class="task-number">${index + 1}.</span>
                 <input type="checkbox" onchange="completeTask(${index})" ${task.completed ? 'checked' : ''}>
                 <span class="task-text">${task.text}</span>
-                
                 <div class="task-actions">
                     <select class="priority-select" onchange="changePriority(${index}, this.value)" style="padding:4px 6px; font-size:0.75rem;">
                         <option value="high" ${task.priority === 'high' ? 'selected' : ''}>ضروري</option>
@@ -917,21 +968,17 @@
             if (!taskList) return;
             taskList.innerHTML = '';
 
-            // 1. تصفية المهام النشطة (غير منتهية) فقط
             let activeTasks = tasks.filter(task => !task.completed);
             
-            // 2. تطبيق فلتر الأولوية
             if (currentFilter !== 'all') {
                 activeTasks = activeTasks.filter(task => task.priority === currentFilter);
             }
 
-            // 3. تطبيق البحث (نص جزئي، أي حرف حتى لو وسط الكلمات) — فقط على المهام غير المنتهية
             if (searchQuery.length > 0) {
                 const query = searchQuery.toLowerCase();
                 activeTasks = activeTasks.filter(task => task.text.toLowerCase().includes(query));
             }
 
-            // عرض معلومات البحث
             if (searchQuery.length > 0 && activeTasks.length === 0) {
                 searchInfo.textContent = '🔍 لا توجد مهام غير منتهية تطابق بحثك.';
             } else if (searchQuery.length > 0) {
@@ -961,25 +1008,19 @@
             updateTaskStats();
         }
 
-        // ==========================
-        //  عرض المهام المنتهية مع دعم البحث
-        // ==========================
         function showCompletedTasks() {
             const completedList = document.getElementById('completedTasksList');
             const searchCompletedInfo = document.getElementById('searchCompletedInfo');
             if (!completedList) return;
             completedList.innerHTML = '';
             
-            // 1. تصفية المهام المنتهية
             let completedTasks = tasks.filter(task => task.completed);
 
-            // 2. تطبيق البحث على المهام المنتهية
             if (searchCompletedQuery.length > 0) {
                 const query = searchCompletedQuery.toLowerCase();
                 completedTasks = completedTasks.filter(task => task.text.toLowerCase().includes(query));
             }
 
-            // عرض معلومات البحث للمهام المنتهية
             if (searchCompletedQuery.length > 0 && completedTasks.length === 0) {
                 searchCompletedInfo.textContent = '🔍 لا توجد مهام منتهية تطابق بحثك.';
             } else if (searchCompletedQuery.length > 0) {
@@ -1019,32 +1060,24 @@
         }
 
         // ==========================
-        //  إكمال المهمة
+        //  عمليات المهام
         // ==========================
         function completeTask(index) {
             tasks[index].completed = true;
             saveTasks();
-            
             if (currentPage === 2) showTasks();
             if (currentPage === 4) showCompletedTasks();
             updateSplashStats();
         }
 
-        // ==========================
-        //  استرجاع المهمة
-        // ==========================
         function undoComplete(index) {
             tasks[index].completed = false;
             saveTasks();
-            
             if (currentPage === 2) showTasks();
             if (currentPage === 4) showCompletedTasks();
             updateSplashStats();
         }
 
-        // ==========================
-        //  تغيير مستوى الأهمية
-        // ==========================
         function changePriority(index, newPriority) {
             tasks[index].priority = newPriority;
             saveTasks();
@@ -1052,9 +1085,6 @@
             if (currentPage === 4) showCompletedTasks();
         }
 
-        // ==========================
-        //  حذف المهمة
-        // ==========================
         function deleteTask(index) {
             if (confirm('هل أنت متأكد من حذف هذه المهمة؟')) {
                 tasks.splice(index, 1);
@@ -1065,9 +1095,6 @@
             }
         }
 
-        // ==========================
-        //  تعديل المهمة
-        // ==========================
         function editTask(index) {
             const taskBoxes = document.querySelectorAll('#taskList .task-box');
             let taskBox = null;
@@ -1077,14 +1104,10 @@
                     break;
                 }
             }
-            
             if (!taskBox) return;
-            
             const textSpan = taskBox.querySelector('.task-text');
             if (!textSpan) return;
-            
             const currentText = tasks[index].text;
-            
             const textarea = document.createElement('textarea');
             textarea.className = 'task-text';
             textarea.value = currentText;
@@ -1096,20 +1119,14 @@
             textarea.style.fontSize = '16px';
             textarea.style.fontFamily = 'inherit';
             textarea.style.resize = 'vertical';
-            
             textSpan.replaceWith(textarea);
             textarea.focus();
-            
             const saveBtn = taskBox.querySelector('.save-btn');
             if (saveBtn) saveBtn.style.display = 'inline';
-            
             const editBtn = taskBox.querySelector('.edit-btn');
             if (editBtn) editBtn.style.display = 'none';
         }
 
-        // ==========================
-        //  حفظ التعديل
-        // ==========================
         function saveEdit(index) {
             const taskBoxes = document.querySelectorAll('#taskList .task-box');
             let taskBox = null;
@@ -1119,30 +1136,22 @@
                     break;
                 }
             }
-            
             if (!taskBox) return;
-            
             const textarea = taskBox.querySelector('.task-text');
             if (!textarea || textarea.tagName !== 'TEXTAREA') return;
-            
             const newText = textarea.value.trim();
             if (newText) {
                 tasks[index].text = newText;
                 saveTasks();
-                
                 const span = document.createElement('span');
                 span.className = 'task-text';
                 span.textContent = newText;
                 textarea.replaceWith(span);
-                
                 const saveBtn = taskBox.querySelector('.save-btn');
                 if (saveBtn) saveBtn.style.display = 'none';
-                
                 const editBtn = taskBox.querySelector('.edit-btn');
                 if (editBtn) editBtn.style.display = 'inline';
-                
                 updateSplashStats();
-                // إعادة عرض المهام مع الحفاظ على الفلتر والبحث
                 if (currentPage === 2) showTasks();
             } else {
                 alert('الرجاء إدخال نص المهمة!');
@@ -1156,10 +1165,8 @@
             const totalTasks = tasks.length;
             const completedTasks = tasks.filter(task => task.completed).length;
             const remainingTasks = totalTasks - completedTasks;
-            
             const remainingEl = document.getElementById('remainingTasks');
             const completedEl = document.getElementById('completedCount');
-            
             if (remainingEl) remainingEl.textContent = remainingTasks;
             if (completedEl) completedEl.textContent = completedTasks;
         }
@@ -1169,15 +1176,12 @@
         // ==========================
         function switchPage(pageNumber) {
             currentPage = pageNumber;
-            
             document.getElementById('page1').style.display = 'none';
             document.getElementById('page2').style.display = 'none';
             document.getElementById('page4').style.display = 'none';
-            
             if (pageNumber === 1) document.getElementById('page1').style.display = 'block';
             else if (pageNumber === 2) document.getElementById('page2').style.display = 'block';
             else if (pageNumber === 4) document.getElementById('page4').style.display = 'block';
-            
             document.querySelectorAll('.nav-tab').forEach(btn => {
                 btn.classList.remove('active');
                 const page = parseInt(btn.dataset.page);
@@ -1185,28 +1189,29 @@
                     btn.classList.add('active');
                 }
             });
-            
             if (pageNumber === 2) showTasks();
             if (pageNumber === 4) showCompletedTasks();
             updateTaskStats();
         }
 
         // ==========================
-        //  تصدير المهام إلى txt وإرسالها عبر البريد الإلكتروني
+        //  عرض النص للنسخ
         // ==========================
-        function exportAndEmailTasks() {
+        function showCopyBox() {
             if (tasks.length === 0) {
-                alert('⚠️ لا توجد مهام لتصديرها!');
+                alert('⚠️ لا توجد مهام لعرضها!');
                 return;
             }
 
-            // بناء محتوى ملف txt
+            const copyBox = document.getElementById('copyBox');
+            const textArea = document.getElementById('copyTextArea');
+
+            // بناء النص المنظم
             let content = '========================================\n';
             content += '📋 قائمة المهام\n';
             content += `📅 تاريخ التصدير: ${new Date().toLocaleString('ar-EG')}\n`;
             content += '========================================\n\n';
 
-            // المهام غير المنتهية
             const activeTasks = tasks.filter(t => !t.completed);
             const completedTasks = tasks.filter(t => t.completed);
 
@@ -1236,53 +1241,59 @@
             content += `⏳ غير منتهية: ${activeTasks.length}\n`;
             content += '========================================\n';
 
-            // إنشاء ملف txt وربطه بفتح البريد الإلكتروني
-            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-            const fileName = `مهامي_${new Date().toISOString().slice(0,10)}.txt`;
-            
-            // محاولة فتح البريد الإلكتروني مباشرة مع الملف كمرفق
-            // نستخدم mailto مع رابط تحميل الملف (يعمل على بعض المتصفحات)
-            // الطريقة الأفضل: إنشاء رابط تحميل وفتح البريد بشكل منفصل
-            
-            // 1. إنشاء رابط تحميل الملف
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = fileName;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            setTimeout(() => URL.revokeObjectURL(url), 5000);
+            textArea.value = content;
+            copyBox.style.display = 'block';
+            textArea.focus();
+            textArea.select();
 
-            // 2. فتح البريد الإلكتروني مع الموضوع والجسم
-            const subject = encodeURIComponent('📋 قائمة المهام');
-            const body = encodeURIComponent(
-                'تم إرفاق ملف txt يحتوي على جميع المهام.\n\n' +
-                `تم التصدير بتاريخ: ${new Date().toLocaleString('ar-EG')}\n` +
-                `إجمالي المهام: ${tasks.length}\n` +
-                `منتهية: ${completedTasks.length}\n` +
-                `غير منتهية: ${activeTasks.length}`
-            );
-            
-            // فتح البريد الإلكتروني في نافذة منفصلة
-            const mailtoLink = `mailto:?subject=${subject}&body=${body}`;
-            window.open(mailtoLink, '_blank');
+            // تمرير إلى صندوق النسخ
+            copyBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
 
-            // رسالة تأكيد
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message success-message';
-            messageDiv.textContent = '✅ تم تصدير المهام وفتح البريد الإلكتروني. يرجى إرفاق الملف يدوياً.';
-            messageDiv.style.marginTop = '10px';
+        // ==========================
+        //  نسخ النص إلى الحافظة
+        // ==========================
+        function copyToClipboard() {
+            const textArea = document.getElementById('copyTextArea');
+            const btn = document.querySelector('.btn-copy');
             
-            const exportSection = document.querySelector('.export-section');
-            // إزالة أي رسائل سابقة
-            const oldMsg = exportSection.querySelector('.message');
-            if (oldMsg) oldMsg.remove();
-            exportSection.insertBefore(messageDiv, exportSection.firstChild);
-            
-            setTimeout(() => {
-                if (messageDiv.parentNode) messageDiv.remove();
-            }, 5000);
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(textArea.value).then(() => {
+                    btn.innerHTML = '<i class="fas fa-check"></i> تم النسخ!';
+                    btn.classList.add('copied');
+                    setTimeout(() => {
+                        btn.innerHTML = '<i class="fas fa-copy"></i> نسخ النص';
+                        btn.classList.remove('copied');
+                    }, 2500);
+                }).catch(() => {
+                    // Fallback
+                    textArea.select();
+                    document.execCommand('copy');
+                    btn.innerHTML = '<i class="fas fa-check"></i> تم النسخ!';
+                    btn.classList.add('copied');
+                    setTimeout(() => {
+                        btn.innerHTML = '<i class="fas fa-copy"></i> نسخ النص';
+                        btn.classList.remove('copied');
+                    }, 2500);
+                });
+            } else {
+                // Fallback للمتصفحات القديمة
+                textArea.select();
+                document.execCommand('copy');
+                btn.innerHTML = '<i class="fas fa-check"></i> تم النسخ!';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.innerHTML = '<i class="fas fa-copy"></i> نسخ النص';
+                    btn.classList.remove('copied');
+                }, 2500);
+            }
+        }
+
+        // ==========================
+        //  إغلاق صندوق النسخ
+        // ==========================
+        function closeCopyBox() {
+            document.getElementById('copyBox').style.display = 'none';
         }
     </script>
 </body>
