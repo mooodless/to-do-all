@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>قائمة المهام</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="/reminders.png">
     <link rel="manifest" href="/manifest.json">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         /* ====== الأساسيات ====== */
@@ -29,7 +31,8 @@
             padding: 0;
         }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* ====== استخدام خط عربي ====== */
+            font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(145deg, #f0f7f0 0%, #efe6ec 100%);
             color: var(--black-soft);
             min-height: 100vh;
@@ -39,8 +42,17 @@
             padding-left: 5px;
             padding-right: 5px;
             margin: 0;
-            /* منع التكبير التلقائي على الجوال */
             touch-action: manipulation;
+        }
+
+        /* ====== التأكد من اتصال الحروف العربية ====== */
+        .task-text, .stat-label, .app-title, .app-sub,
+        .nav-tab, .filter-tab, .priority-badge,
+        .stats-text, .hint-text, .message,
+        button, input, textarea, select {
+            font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            unicode-bidi: plaintext;
+            direction: rtl;
         }
         /* ====== صفحة البداية ====== */
         .splash-container {
@@ -481,6 +493,47 @@
             opacity: 0.7;
         }
 
+        /* ====== زر التصدير ====== */
+        .export-section {
+            margin-top: 18px;
+            margin-bottom: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            border-top: 1px solid rgba(43,94,68,0.10);
+            padding-top: 18px;
+        }
+        .export-btn {
+            background: linear-gradient(135deg, #6a8d7a, #2b5e44);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(43,94,68,0.2);
+            transition: all 0.25s ease;
+            width: 100%;
+            max-width: 260px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(43,94,68,0.3);
+            background: linear-gradient(135deg, #7ca08a, #1e4a3a);
+        }
+        .export-btn i {
+            font-size: 1.1rem;
+        }
+        body, button, input, textarea, select {
+            font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
         /* ====== تصميم متجاوب ====== */
         @media (max-width: 600px) {
             .container { justify-content: center; height: 90vh; max-height: 650px; border-radius: 16px; }
@@ -597,6 +650,14 @@
                     <div id="searchInfo" class="search-info"></div>
                     <span class="stats-text">المهام المتبقية: <span id="remainingTasks">0</span></span>
                     <div id="taskList"></div>
+
+                    <!-- ====== زر التصدير (أسفل المهام) ====== -->
+                    <div class="export-section">
+                        <button class="export-btn" onclick="exportAndEmailTasks()">
+                            <i class="fas fa-file-export"></i> تصدير المهام وإرسالها
+                        </button>
+                        <span style="font-size:0.75rem; color:#5f6f5f;">سيتم تصدير جميع المهام (غير المنتهية والمنتهية) بصيغة txt</span>
+                    </div>
                 </div>
 
                 <!-- صفحة المهام المنتهية -->
@@ -1128,6 +1189,100 @@
             if (pageNumber === 2) showTasks();
             if (pageNumber === 4) showCompletedTasks();
             updateTaskStats();
+        }
+
+        // ==========================
+        //  تصدير المهام إلى txt وإرسالها عبر البريد الإلكتروني
+        // ==========================
+        function exportAndEmailTasks() {
+            if (tasks.length === 0) {
+                alert('⚠️ لا توجد مهام لتصديرها!');
+                return;
+            }
+
+            // بناء محتوى ملف txt
+            let content = '========================================\n';
+            content += '📋 قائمة المهام\n';
+            content += `📅 تاريخ التصدير: ${new Date().toLocaleString('ar-EG')}\n`;
+            content += '========================================\n\n';
+
+            // المهام غير المنتهية
+            const activeTasks = tasks.filter(t => !t.completed);
+            const completedTasks = tasks.filter(t => t.completed);
+
+            if (activeTasks.length > 0) {
+                content += '📌 المهام المتبقية (غير منتهية):\n';
+                content += '----------------------------------------\n';
+                activeTasks.forEach((task, i) => {
+                    const priorityLabel = getPriorityLabel(task.priority);
+                    content += `${i+1}. ${task.text}  [${priorityLabel}]\n`;
+                });
+                content += '\n';
+            }
+
+            if (completedTasks.length > 0) {
+                content += '✅ المهام المنتهية:\n';
+                content += '----------------------------------------\n';
+                completedTasks.forEach((task, i) => {
+                    const priorityLabel = getPriorityLabel(task.priority);
+                    content += `${i+1}. ${task.text}  [${priorityLabel}]\n`;
+                });
+                content += '\n';
+            }
+
+            content += '========================================\n';
+            content += `📊 إجمالي المهام: ${tasks.length}\n`;
+            content += `✅ منتهية: ${completedTasks.length}\n`;
+            content += `⏳ غير منتهية: ${activeTasks.length}\n`;
+            content += '========================================\n';
+
+            // إنشاء ملف txt وربطه بفتح البريد الإلكتروني
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            const fileName = `مهامي_${new Date().toISOString().slice(0,10)}.txt`;
+            
+            // محاولة فتح البريد الإلكتروني مباشرة مع الملف كمرفق
+            // نستخدم mailto مع رابط تحميل الملف (يعمل على بعض المتصفحات)
+            // الطريقة الأفضل: إنشاء رابط تحميل وفتح البريد بشكل منفصل
+            
+            // 1. إنشاء رابط تحميل الملف
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            setTimeout(() => URL.revokeObjectURL(url), 5000);
+
+            // 2. فتح البريد الإلكتروني مع الموضوع والجسم
+            const subject = encodeURIComponent('📋 قائمة المهام');
+            const body = encodeURIComponent(
+                'تم إرفاق ملف txt يحتوي على جميع المهام.\n\n' +
+                `تم التصدير بتاريخ: ${new Date().toLocaleString('ar-EG')}\n` +
+                `إجمالي المهام: ${tasks.length}\n` +
+                `منتهية: ${completedTasks.length}\n` +
+                `غير منتهية: ${activeTasks.length}`
+            );
+            
+            // فتح البريد الإلكتروني في نافذة منفصلة
+            const mailtoLink = `mailto:?subject=${subject}&body=${body}`;
+            window.open(mailtoLink, '_blank');
+
+            // رسالة تأكيد
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message success-message';
+            messageDiv.textContent = '✅ تم تصدير المهام وفتح البريد الإلكتروني. يرجى إرفاق الملف يدوياً.';
+            messageDiv.style.marginTop = '10px';
+            
+            const exportSection = document.querySelector('.export-section');
+            // إزالة أي رسائل سابقة
+            const oldMsg = exportSection.querySelector('.message');
+            if (oldMsg) oldMsg.remove();
+            exportSection.insertBefore(messageDiv, exportSection.firstChild);
+            
+            setTimeout(() => {
+                if (messageDiv.parentNode) messageDiv.remove();
+            }, 5000);
         }
     </script>
 </body>
