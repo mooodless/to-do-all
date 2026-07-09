@@ -1207,10 +1207,10 @@
             const textArea = document.getElementById('copyTextArea');
 
             // بناء النص المنظم
-            let content = '========================================\n';
+            let content = '===============\n';
             content += '📋 قائمة المهام\n';
             content += `📅 تاريخ التصدير: ${new Date().toLocaleString('ar-EG')}\n`;
-            content += '========================================\n\n';
+            content += '===============\n\n';
 
             const activeTasks = tasks.filter(t => !t.completed);
             const completedTasks = tasks.filter(t => t.completed);
@@ -1227,7 +1227,7 @@
 
             if (completedTasks.length > 0) {
                 content += '✅ المهام المنتهية:\n';
-                content += '----------------------------------------\n';
+                content += '-----------------\n';
                 completedTasks.forEach((task, i) => {
                     const priorityLabel = getPriorityLabel(task.priority);
                     content += `${i+1}. ${task.text}  [${priorityLabel}]\n`;
@@ -1235,11 +1235,11 @@
                 content += '\n';
             }
 
-            content += '========================================\n';
+            content += '===============\n';
             content += `📊 إجمالي المهام: ${tasks.length}\n`;
             content += `✅ منتهية: ${completedTasks.length}\n`;
             content += `⏳ غير منتهية: ${activeTasks.length}\n`;
-            content += '========================================\n';
+            content += '===============\n';
 
             textArea.value = content;
             copyBox.style.display = 'block';
